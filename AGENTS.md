@@ -80,3 +80,19 @@ that actually ran and distinguish them from pending platform/CI verification.
   use conformance/regression tests. Do not replace a correct engine for cosmetic
   changes. Rust is decided; toolkit evolution and project licensing remain
   separate review topics. No automatic merge or release.
+
+## Version and release approval
+
+- Follow docs/VERSIONING.md and ADR 0004. Cargo.toml package.version is the
+  source of the actual application version; CLI and Office JSON use that value.
+- Keep initial prereleases on `0.1.0-alpha.N`, `0.1.0-beta.N` and `0.1.0-rc.N`,
+  with positive integer N. The first stable product release is `0.2.0`.
+- End every final task report with the current version and its approval status,
+  presenting a pending version to the owner for agreement. Read the current
+  value; do not guess it or claim approval from silence.
+- Do not increment automatically after each task or promote a release channel
+  without owner approval. Keep Cargo.lock, the capabilities fixture and current
+  version documentation consistent with each proposed change.
+- Version agreement and release publication are separate decisions. No automatic
+  tags, releases, merges or published-history rewrites. Keep released versions
+  immutable. App, integration-protocol and workbook-content versions are separate.

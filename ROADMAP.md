@@ -1,7 +1,9 @@
 # BreakFree Sheets — Roadmap
 
 **Status: first independent prototype implemented for review.** Later stages
-remain planned. No release dates are committed. Code readiness, local test
+remain planned. No release dates are committed. Initial prereleases use `0.1.0-alpha.N`,
+`0.1.0-beta.N`, then `0.1.0-rc.N`; the first stable product release is `0.2.0`.
+See [version approval](docs/VERSIONING.md). Code readiness, local test
 results, CI, owner review, merge and release are separate states.
 
 | Stage | Dependencies | Completion criteria | Required checks | Status |
@@ -16,7 +18,7 @@ results, CI, owner review, merge and release are separate states.
 | 6. CSV/XLSX exchange | Stable typed model and functions; reviewed compatibility strategy | Explicit CSV encoding/delimiters/type choices; scoped XLSX subset; public compatibility matrix; safe refusal of lossy unsupported content | Redistributable synthetic round trips, leading-zero identifiers, unknown formulas/elements, ZIP/resource limits, malformed imports | Planned; no compatibility claim today |
 | 7. Charts and analytics | Stable data ranges, formatting, functions and exchange | Basic charts tied to ranges; defined missing/error data behavior; scoped analytic features | Data-change refresh, chart persistence, errors/blanks, export and accessible alternatives | Planned |
 | 8. Automation | Stable engine/API; separate owner-reviewed security design | Explicit bounded automation interface, consent and isolation; no automatic imported macro execution | Resource limits, permissions, deterministic runs, hostile fixtures, undo/persistence consequences | Planned; macros/network execution remain excluded from the prototype |
-| 9. Stabilization and releases | Accepted functional stages; license and security disclosure policy; real platform evidence | Reviewed platform matrix; native packaging; recovery strategy; accessibility; install/upgrade/uninstall; release notes and checksums | Windows/macOS/Linux workflows on declared targets, interruption/failure matrix, dependency/asset notices, regression suite and release review | Planned; no automatic merge or release |
+| 9. Stabilization and releases | Accepted functional stages; owner-approved version; license and security disclosure policy; real platform evidence | Reviewed platform matrix; native packaging; recovery strategy; accessibility; install/upgrade/uninstall; release notes and checksums | Windows/macOS/Linux workflows on declared targets, interruption/failure matrix, dependency/asset notices, regression suite and release review | Planned; no automatic merge or release |
 
 The application remains independently buildable, testable and runnable at every
 stage. Suite integration must use versioned local contracts, and changes to

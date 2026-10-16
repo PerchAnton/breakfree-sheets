@@ -11,6 +11,9 @@
 > target; the identity remains BreakFree Sheets. Visual identity, XLSX
 > compatibility and a supported-platform release are not claimed.
 
+Current development candidate: **`0.1.0-alpha.1`**, awaiting owner version approval.
+No product release is published. See the [version and approval policy](docs/VERSIONING.md).
+
 ## Build and run independently
 
 Install Rust using the official [Rust toolchain installer](https://rustup.rs/).

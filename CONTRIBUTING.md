@@ -17,3 +17,9 @@ Keep changes on a branch and submit a PR; do not merge or publish a release
 without a separate instruction. Keep project evidence in
 [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md), with journal updates in their own
 commit. Distinguish local tests, remote CI, review, merge and release.
+
+Follow the [version and approval policy](docs/VERSIONING.md). All initial alpha,
+beta and release-candidate builds use the `0.1.0` base; the first stable product
+release is `0.2.0`. End every task report with the actual current application
+version and its owner-approval status. A version proposal does not authorize
+publication or an automatic increment.
