@@ -30,8 +30,8 @@ that actually ran and distinguish them from pending platform/CI verification.
 ## Project journal and remote checks
 
 - Maintain this project's authoritative history in `docs/PROJECT_LOG.md` in this
-  repository and its full private mirror as specified below. Keep this project's
-  entries separate from other projects and general work summaries.
+  repository. Keep this project's entries separate from other projects and
+  general work summaries.
 - Before writing, read this file and the current journal, fetch safely, and
   preserve local and remote changes. Never force-push or include secrets.
 - Record Europe/Kyiv timestamps, scope/period, sources checked and inaccessible
@@ -53,42 +53,6 @@ that actually ran and distinguish them from pending platform/CI verification.
   date table. Distinguish recorded evidence from fresh checks. Do not send
   public participant replies or assignments without explicit authorization.
 - No recurring monitoring is configured. Do not promise scheduled checks.
-
-## Журнал и приватное зеркало
-
-- **Two copies are mandatory after every significant milestone and every journal
-  update.** The authoritative journal is `docs/PROJECT_LOG.md` in
-  `https://github.com/PerchAnton/breakfree-sheets`. The complete private copy is
-  `breakfree/breakfree-sheets/PROJECT_LOG.md` on branch `main` of
-  `https://github.com/PerchAnton/gitwork`. This replaces the previous prohibition
-  against duplicating the journal in `gitwork`.
-- Read the current `prompts/breakfree-sheets.md` in `gitwork/main`, applicable
-  repository instructions and both existing journals. Fetch safely and preserve
-  local changes and other authors' records. If the mirror has entries absent
-  from the authoritative journal, reconcile them there without data loss and
-  publish that journal before copying it. Never publish private correspondence
-  or secrets while reconciling history.
-- Publish the authoritative journal in a separate commit through this project's
-  branch/PR workflow; do not merge `main` or release without separate authority.
-  Then fetch a fresh `gitwork/main`, reread its existing mirror, and copy the full
-  text of the published authoritative journal. A summary is not a mirror.
-- Store mirror metadata separately at
-  `breakfree/breakfree-sheets/SYNC.md` in `gitwork/main`: source repository,
-  source branch, source path, full published source commit SHA, a permalink to
-  the journal at that commit, and synchronization time with Europe/Kyiv timezone
-  and UTC offset. Do not add private-only metadata to the mirrored journal text.
-- Commit and push the mirror and metadata in a separate commit to `gitwork/main`.
-  Update only the Sheets row of its Breakfree README table, with a short status,
-  mirror/source links, check time and next action. Preserve other projects.
-- Never force-push. If a push loses a race, fetch and reconcile concurrent work
-  without losing either author's records, then retry normally. Reconcile any
-  mirror-only records in the authoritative journal before replacing the mirror.
-- Read both files back from GitHub after publication and verify identical text
-  and the source SHA recorded in `SYNC.md`. Do not report synchronization based
-  only on a local copy or a successful authoritative-journal push.
-- If the private repository is unavailable, keep a prepared local copy and
-  metadata, and explicitly report: «приватная копия не отправлена». Continue with
-  the authorized publication that is possible; never imply both copies exist.
 
 ## Owner decisions: Rust and Windows desktop reference
 

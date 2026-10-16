@@ -85,5 +85,4 @@ No visual identity, Excel compatibility or supported-platform claim follows.
 
 Dependency notices, including embedded font notices, are retained separately.
 Licensing, accessibility, installer/signing policy and public releases still
-require their own owner review. Other application repositories are unchanged;
-only the required private journal mirror is updated outside Sheets.
+require their own owner review. Other application repositories are unchanged.

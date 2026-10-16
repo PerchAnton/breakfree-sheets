@@ -132,8 +132,7 @@ comparison and Windows 100/125/150% display checks remain explicitly unverified.
 Sheets builds/tests/runs without their repositories or installations.
 
 Read [AGENTS.md](AGENTS.md), [CONTRIBUTING.md](CONTRIBUTING.md) and
-[the project journal](docs/PROJECT_LOG.md). The full journal is mirrored privately
-under the documented two-copy rule. People of every background, including
+[the project journal](docs/PROJECT_LOG.md). People of every background, including
 LGBTQ+ contributors and users, are welcome; follow the shared
 [Code of Conduct](https://github.com/PerchAnton/breakfree-office/blob/main/CODE_OF_CONDUCT.md).
 Use synthetic examples and never upload confidential workbooks or credentials.
