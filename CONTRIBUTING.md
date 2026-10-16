@@ -6,4 +6,25 @@ Use this repository for grids, cell models, formulas, recalculation, workbook pe
 
 Start with [ROADMAP.md](ROADMAP.md) and [the first milestone](docs/REQUIREMENTS.md). Discuss calculation semantics, major dependencies and licensing before implementation. The software license is an owner decision still to be made.
 
-Provide small synthetic examples with explicit expected results. Never attach real customer records, private financial workbooks or credentials. Explain checks actually run and any untested behavior; no build/test commands exist yet.
+Provide small synthetic examples with explicit expected results. Never attach real customer records, private financial workbooks or credentials. Explain checks actually run and any untested behavior. Run `cargo test --locked --no-default-features`, `cargo test --locked`,
+`cargo fmt --all -- --check` and the checks documented in [README.md](README.md).
+
+The owner has selected Rust for every layer and Excel 2024 for Windows as the
+visual reference; [ADR 0003](docs/adr/0003-rust-native-desktop.md) supersedes the
+Python prototype decision. The native toolkit remains reviewable. No software
+license is selected by the language/UI decision.
+Keep changes on a branch and submit a PR; do not merge or publish a release
+without a separate instruction. Keep project evidence in
+[docs/PROJECT_LOG.md](docs/PROJECT_LOG.md), with journal updates in their own
+commit. Distinguish local tests, remote CI, review, merge and release.
+
+Follow the [version and approval policy](docs/VERSIONING.md). All initial alpha,
+beta and release-candidate builds use the `0.1.0` base; the first stable product
+release is `0.2.0`. End every task report with the actual current application
+version and its owner-approval status. Every completed changeset, including
+changes limited to tests, configuration or documentation, increments the current
+prerelease counter by one and adds a dated entry to [CHANGELOG.md](CHANGELOG.md).
+The implementation and its accompanying validation/changelog/journal commits
+share that version. Further independent changes require the next number.
+Preparing the next candidate is authorized by this policy; agreeing to its exact
+number, promoting channels and publishing releases remain separate decisions.

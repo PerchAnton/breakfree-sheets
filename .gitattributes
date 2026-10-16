@@ -1,0 +1,2 @@
+# Preserve third-party notice bytes, including original line endings/whitespace.
+third_party/licenses/*.txt -text -whitespace
