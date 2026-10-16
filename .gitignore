@@ -15,3 +15,10 @@ Desktop.ini
 *.swp
 *.swo
 *~
+
+# Python and local build/test output
+__pycache__/
+*.py[cod]
+dist/
+.venv/
+.coverage

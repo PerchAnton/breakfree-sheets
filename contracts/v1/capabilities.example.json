@@ -1,0 +1,15 @@
+{
+  "protocol_version": 1,
+  "app_id": "breakfree.sheets",
+  "app_version": "0.1.0.dev1",
+  "display_name": "BreakFree Sheets",
+  "capabilities": ["new", "open"],
+  "formats": [
+    {
+      "id": "breakfree.sheets.native",
+      "extensions": ["bfsheet"],
+      "read": true,
+      "write": true
+    }
+  ]
+}

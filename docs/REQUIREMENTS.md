@@ -1,6 +1,8 @@
 # First milestone — a reliable calculation loop
 
-**Proposed requirements; not implemented.** Start with one worksheet and a deliberately small formula language.
+**First iteration implemented for review.** One worksheet with a deliberately
+small formula language. Local checks and remaining platform/review gates are
+listed in [VALIDATION.md](VALIDATION.md); this is not a release acceptance claim.
 
 ## User story
 
@@ -8,7 +10,7 @@ A person enters a short list of values, adds formulas, changes an input, sees th
 
 ## In scope
 
-Cell navigation, text/numeric values, arithmetic, single-cell references, visible calculation errors, undo/redo and versioned local persistence. The exact formula grammar, numeric representation and native format require explicit architecture decisions.
+Cell navigation, text/numeric values, arithmetic, single-cell references, visible calculation errors, undo/redo and versioned local persistence. The prototype decisions are recorded in [ADR 0001](adr/0001-independent-prototype.md) and [ADR 0002](adr/0002-calculation-and-storage.md).
 
 ## Acceptance scenarios
 
@@ -30,6 +32,21 @@ Cell navigation, text/numeric values, arithmetic, single-cell references, visibl
 Specify operator precedence, numeric precision/rounding, blank-cell behavior, reference rules, error propagation and recalculation order. Add boundary tests once those semantics are selected. Decimal and date handling must not be left to unreviewed locale-dependent guesses.
 
 Imported formulas must be parsed as a restricted language, not passed to a general-purpose `eval`. Macro execution, external links and network-backed functions are outside this milestone.
+
+## Implementation mapping
+
+| Scenarios | Evidence | Status |
+| :--- | :--- | :--- |
+| S01 | Tk mouse selection, source entry, keyboard events in `tests/test_gui.py` | Local macOS GUI checked; accessibility review pending |
+| S02–S06 | `tests/test_core.py`: explicit types, arithmetic, dependencies, errors and cycles | Local automated checks passed |
+| S07 | Headless history and GUI undo/redo scenarios | Local automated checks passed |
+| S08 | Headless and real-Tk save/open/recalculate scenarios | Local automated checks passed |
+| S09 | Pending-entry prompts, Cancel/Discard/Save, failed flush/replace and dirty-state tests | Local automated checks passed; power-loss recovery outside scope |
+| S10 | Foreign, malformed, unknown version/field, duplicate keys and source preservation | Local automated checks passed |
+| Office CLI | `tests/test_cli.py`, exact JSON fixture and isolated artifact execution | Local baseline verified; upstream spec reconciliation not performed |
+
+Source files contain no Office/Docs/Slides imports or repository-relative runtime
+references. The build includes only this application's source and local assets.
 
 ## Not included yet
 

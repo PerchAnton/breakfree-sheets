@@ -1,0 +1,26 @@
+{
+  "app_id": "breakfree.sheets",
+  "format_id": "breakfree.sheets.native",
+  "file_version": 1,
+  "worksheet": {
+    "name": "Sheet1",
+    "cells": {
+      "A1": {
+        "kind": "number",
+        "source": "2"
+      },
+      "A3": {
+        "kind": "text",
+        "source": "00123"
+      },
+      "B1": {
+        "kind": "number",
+        "source": "3"
+      },
+      "C1": {
+        "kind": "formula",
+        "source": "=A1+B1"
+      }
+    }
+  }
+}
