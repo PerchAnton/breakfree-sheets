@@ -1,10 +1,15 @@
 # ADR 0001 — Independent Python/Tk prototype
 
 - Date: 2026-10-16
-- Status: provisional, reversible prototype choice for owner review
+- Status: superseded by [ADR 0003](0003-rust-native-desktop.md); historical prototype decision
 - Scope: Sheets only; no suite-wide language or toolkit decision
 
-## Context and decision
+The owner has now selected Rust for every application layer and Excel 2024 for
+Windows as the visual reference. The text below preserves the earlier rationale,
+not the active language/toolkit decision. The Python sources are archived under
+`legacy/python/` and are not a dependency of the Rust executable.
+
+## Historical context and decision
 
 The owner requested a working independent first iteration and explicitly allowed
 a reversible stack choice where no stack or Office ADR exists. Sheets at

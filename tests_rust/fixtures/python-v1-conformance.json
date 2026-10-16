@@ -1,0 +1,1197 @@
+[
+  {
+    "name": "=2+3*4",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=2+3*4"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "14"
+    }
+  },
+  {
+    "name": "=(2+3)*4",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=(2+3)*4"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "20"
+    }
+  },
+  {
+    "name": "=12/3/2",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=12/3/2"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "2"
+    }
+  },
+  {
+    "name": "=8-3-2",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=8-3-2"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "3"
+    }
+  },
+  {
+    "name": "=-2*3",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=-2*3"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "-6"
+    }
+  },
+  {
+    "name": "=-(2+3)",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=-(2+3)"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "-5"
+    }
+  },
+  {
+    "name": "=--2",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=--2"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "2"
+    }
+  },
+  {
+    "name": "=2*-3",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=2*-3"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "-6"
+    }
+  },
+  {
+    "name": "=2--3",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=2--3"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "5"
+    }
+  },
+  {
+    "name": "=1/-2",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=1/-2"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "-0.5"
+    }
+  },
+  {
+    "name": "=0.1+0.2",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=0.1+0.2"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "0.3"
+    }
+  },
+  {
+    "name": "=1/3",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=1/3"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "0.3333333333333333333333333333"
+    }
+  },
+  {
+    "name": "=0/0",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=0/0"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#DIV/0!"
+    }
+  },
+  {
+    "name": "=1/-0",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=1/-0"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#DIV/0!"
+    }
+  },
+  {
+    "name": "=1+",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=1+"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#SYNTAX!"
+    }
+  },
+  {
+    "name": "=SUM(A1)",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=SUM(A1)"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#SYNTAX!"
+    }
+  },
+  {
+    "name": "=A0",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=A0"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#REF!"
+    }
+  },
+  {
+    "name": "=A101",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=A101"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#REF!"
+    }
+  },
+  {
+    "name": "=AA1",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=AA1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#REF!"
+    }
+  },
+  {
+    "name": "=A01",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=A01"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#REF!"
+    }
+  },
+  {
+    "name": "=2(3)",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=2(3)"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#SYNTAX!"
+    }
+  },
+  {
+    "name": "=__import__(1)",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=__import__(1)"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#SYNTAX!"
+    }
+  },
+  {
+    "name": "=A1+1",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=A1+1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#CYCLE!"
+    }
+  },
+  {
+    "name": "= Sheet2!A1",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "= Sheet2!A1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#REF!"
+    }
+  },
+  {
+    "name": "=1e3",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=1e3"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "#SYNTAX!"
+    }
+  },
+  {
+    "name": "=0.1234567890123456789012345678+0.00000000000000000000000000005",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=0.1234567890123456789012345678+0.00000000000000000000000000005"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "0.1234567890123456789012345678"
+    }
+  },
+  {
+    "name": "required",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "number",
+            "source": "2"
+          },
+          "B1": {
+            "kind": "number",
+            "source": "3"
+          },
+          "C1": {
+            "kind": "formula",
+            "source": "=A1+B1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "2",
+      "B1": "3",
+      "C1": "5"
+    }
+  },
+  {
+    "name": "changed",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "number",
+            "source": "4"
+          },
+          "B1": {
+            "kind": "number",
+            "source": "3"
+          },
+          "C1": {
+            "kind": "formula",
+            "source": "=A1+B1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "4",
+      "B1": "3",
+      "C1": "7"
+    }
+  },
+  {
+    "name": "blank",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "B1": {
+            "kind": "formula",
+            "source": "=A1+1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "B1": "1"
+    }
+  },
+  {
+    "name": "text-identifier",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "text",
+            "source": "00123"
+          },
+          "B1": {
+            "kind": "formula",
+            "source": "=A1+1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "00123",
+      "B1": "#VALUE!"
+    }
+  },
+  {
+    "name": "empty-text",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "text",
+            "source": ""
+          },
+          "B1": {
+            "kind": "formula",
+            "source": "=A1+1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "",
+      "B1": "#VALUE!"
+    }
+  },
+  {
+    "name": "indirect-cycle",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "formula",
+            "source": "=B1"
+          },
+          "B1": {
+            "kind": "formula",
+            "source": "=C1"
+          },
+          "C1": {
+            "kind": "formula",
+            "source": "=A1"
+          },
+          "D1": {
+            "kind": "formula",
+            "source": "=B1+1"
+          },
+          "E1": {
+            "kind": "formula",
+            "source": "=2+3"
+          }
+        }
+      }
+    },
+    "expected": {
+      "E1": "5",
+      "C1": "#CYCLE!",
+      "B1": "#CYCLE!",
+      "D1": "#CYCLE!",
+      "A1": "#CYCLE!"
+    }
+  },
+  {
+    "name": "diamond",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "number",
+            "source": "4"
+          },
+          "B1": {
+            "kind": "formula",
+            "source": "=A1*2"
+          },
+          "C1": {
+            "kind": "formula",
+            "source": "=A1*3"
+          },
+          "D1": {
+            "kind": "formula",
+            "source": "=B1+C1"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "4",
+      "B1": "8",
+      "C1": "12",
+      "D1": "20"
+    }
+  },
+  {
+    "name": "numeric-bound-*",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "number",
+            "source": "1"
+          },
+          "A10": {
+            "kind": "formula",
+            "source": "=A9*1000000000000000000000000000"
+          },
+          "A11": {
+            "kind": "formula",
+            "source": "=A10*1000000000000000000000000000"
+          },
+          "A12": {
+            "kind": "formula",
+            "source": "=A11*1000000000000000000000000000"
+          },
+          "A13": {
+            "kind": "formula",
+            "source": "=A12*1000000000000000000000000000"
+          },
+          "A14": {
+            "kind": "formula",
+            "source": "=A13*1000000000000000000000000000"
+          },
+          "A15": {
+            "kind": "formula",
+            "source": "=A14*1000000000000000000000000000"
+          },
+          "A16": {
+            "kind": "formula",
+            "source": "=A15*1000000000000000000000000000"
+          },
+          "A17": {
+            "kind": "formula",
+            "source": "=A16*1000000000000000000000000000"
+          },
+          "A18": {
+            "kind": "formula",
+            "source": "=A17*1000000000000000000000000000"
+          },
+          "A19": {
+            "kind": "formula",
+            "source": "=A18*1000000000000000000000000000"
+          },
+          "A2": {
+            "kind": "formula",
+            "source": "=A1*1000000000000000000000000000"
+          },
+          "A20": {
+            "kind": "formula",
+            "source": "=A19*1000000000000000000000000000"
+          },
+          "A21": {
+            "kind": "formula",
+            "source": "=A20*1000000000000000000000000000"
+          },
+          "A22": {
+            "kind": "formula",
+            "source": "=A21*1000000000000000000000000000"
+          },
+          "A23": {
+            "kind": "formula",
+            "source": "=A22*1000000000000000000000000000"
+          },
+          "A24": {
+            "kind": "formula",
+            "source": "=A23*1000000000000000000000000000"
+          },
+          "A25": {
+            "kind": "formula",
+            "source": "=A24*1000000000000000000000000000"
+          },
+          "A26": {
+            "kind": "formula",
+            "source": "=A25*1000000000000000000000000000"
+          },
+          "A27": {
+            "kind": "formula",
+            "source": "=A26*1000000000000000000000000000"
+          },
+          "A28": {
+            "kind": "formula",
+            "source": "=A27*1000000000000000000000000000"
+          },
+          "A29": {
+            "kind": "formula",
+            "source": "=A28*1000000000000000000000000000"
+          },
+          "A3": {
+            "kind": "formula",
+            "source": "=A2*1000000000000000000000000000"
+          },
+          "A30": {
+            "kind": "formula",
+            "source": "=A29*1000000000000000000000000000"
+          },
+          "A31": {
+            "kind": "formula",
+            "source": "=A30*1000000000000000000000000000"
+          },
+          "A32": {
+            "kind": "formula",
+            "source": "=A31*1000000000000000000000000000"
+          },
+          "A33": {
+            "kind": "formula",
+            "source": "=A32*1000000000000000000000000000"
+          },
+          "A34": {
+            "kind": "formula",
+            "source": "=A33*1000000000000000000000000000"
+          },
+          "A35": {
+            "kind": "formula",
+            "source": "=A34*1000000000000000000000000000"
+          },
+          "A36": {
+            "kind": "formula",
+            "source": "=A35*1000000000000000000000000000"
+          },
+          "A37": {
+            "kind": "formula",
+            "source": "=A36*1000000000000000000000000000"
+          },
+          "A38": {
+            "kind": "formula",
+            "source": "=A37*1000000000000000000000000000"
+          },
+          "A39": {
+            "kind": "formula",
+            "source": "=A38*1000000000000000000000000000"
+          },
+          "A4": {
+            "kind": "formula",
+            "source": "=A3*1000000000000000000000000000"
+          },
+          "A40": {
+            "kind": "formula",
+            "source": "=A39*1000000000000000000000000000"
+          },
+          "A41": {
+            "kind": "formula",
+            "source": "=A40*1000000000000000000000000000"
+          },
+          "A42": {
+            "kind": "formula",
+            "source": "=A41*1000000000000000000000000000"
+          },
+          "A43": {
+            "kind": "formula",
+            "source": "=A42*1000000000000000000000000000"
+          },
+          "A44": {
+            "kind": "formula",
+            "source": "=A43*1000000000000000000000000000"
+          },
+          "A5": {
+            "kind": "formula",
+            "source": "=A4*1000000000000000000000000000"
+          },
+          "A6": {
+            "kind": "formula",
+            "source": "=A5*1000000000000000000000000000"
+          },
+          "A7": {
+            "kind": "formula",
+            "source": "=A6*1000000000000000000000000000"
+          },
+          "A8": {
+            "kind": "formula",
+            "source": "=A7*1000000000000000000000000000"
+          },
+          "A9": {
+            "kind": "formula",
+            "source": "=A8*1000000000000000000000000000"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "1",
+      "A2": "1000000000000000000000000000",
+      "A3": "1E+54",
+      "A4": "1E+81",
+      "A5": "1E+108",
+      "A6": "1E+135",
+      "A7": "1E+162",
+      "A8": "1E+189",
+      "A9": "1E+216",
+      "A10": "1E+243",
+      "A11": "1E+270",
+      "A12": "1E+297",
+      "A13": "1E+324",
+      "A14": "1E+351",
+      "A15": "1E+378",
+      "A16": "1E+405",
+      "A17": "1E+432",
+      "A18": "1E+459",
+      "A19": "1E+486",
+      "A20": "1E+513",
+      "A21": "1E+540",
+      "A22": "1E+567",
+      "A23": "1E+594",
+      "A24": "1E+621",
+      "A25": "1E+648",
+      "A26": "1E+675",
+      "A27": "1E+702",
+      "A28": "1E+729",
+      "A29": "1E+756",
+      "A30": "1E+783",
+      "A31": "1E+810",
+      "A32": "1E+837",
+      "A33": "1E+864",
+      "A34": "1E+891",
+      "A35": "1E+918",
+      "A36": "1E+945",
+      "A37": "1E+972",
+      "A38": "1E+999",
+      "A39": "#NUM!",
+      "A40": "#NUM!",
+      "A41": "#NUM!",
+      "A42": "#NUM!",
+      "A43": "#NUM!",
+      "A44": "#NUM!"
+    }
+  },
+  {
+    "name": "numeric-bound-/",
+    "book": {
+      "app_id": "breakfree.sheets",
+      "format_id": "breakfree.sheets.native",
+      "file_version": 1,
+      "worksheet": {
+        "name": "Sheet1",
+        "cells": {
+          "A1": {
+            "kind": "number",
+            "source": "1"
+          },
+          "A10": {
+            "kind": "formula",
+            "source": "=A9/1000000000000000000000000000"
+          },
+          "A11": {
+            "kind": "formula",
+            "source": "=A10/1000000000000000000000000000"
+          },
+          "A12": {
+            "kind": "formula",
+            "source": "=A11/1000000000000000000000000000"
+          },
+          "A13": {
+            "kind": "formula",
+            "source": "=A12/1000000000000000000000000000"
+          },
+          "A14": {
+            "kind": "formula",
+            "source": "=A13/1000000000000000000000000000"
+          },
+          "A15": {
+            "kind": "formula",
+            "source": "=A14/1000000000000000000000000000"
+          },
+          "A16": {
+            "kind": "formula",
+            "source": "=A15/1000000000000000000000000000"
+          },
+          "A17": {
+            "kind": "formula",
+            "source": "=A16/1000000000000000000000000000"
+          },
+          "A18": {
+            "kind": "formula",
+            "source": "=A17/1000000000000000000000000000"
+          },
+          "A19": {
+            "kind": "formula",
+            "source": "=A18/1000000000000000000000000000"
+          },
+          "A2": {
+            "kind": "formula",
+            "source": "=A1/1000000000000000000000000000"
+          },
+          "A20": {
+            "kind": "formula",
+            "source": "=A19/1000000000000000000000000000"
+          },
+          "A21": {
+            "kind": "formula",
+            "source": "=A20/1000000000000000000000000000"
+          },
+          "A22": {
+            "kind": "formula",
+            "source": "=A21/1000000000000000000000000000"
+          },
+          "A23": {
+            "kind": "formula",
+            "source": "=A22/1000000000000000000000000000"
+          },
+          "A24": {
+            "kind": "formula",
+            "source": "=A23/1000000000000000000000000000"
+          },
+          "A25": {
+            "kind": "formula",
+            "source": "=A24/1000000000000000000000000000"
+          },
+          "A26": {
+            "kind": "formula",
+            "source": "=A25/1000000000000000000000000000"
+          },
+          "A27": {
+            "kind": "formula",
+            "source": "=A26/1000000000000000000000000000"
+          },
+          "A28": {
+            "kind": "formula",
+            "source": "=A27/1000000000000000000000000000"
+          },
+          "A29": {
+            "kind": "formula",
+            "source": "=A28/1000000000000000000000000000"
+          },
+          "A3": {
+            "kind": "formula",
+            "source": "=A2/1000000000000000000000000000"
+          },
+          "A30": {
+            "kind": "formula",
+            "source": "=A29/1000000000000000000000000000"
+          },
+          "A31": {
+            "kind": "formula",
+            "source": "=A30/1000000000000000000000000000"
+          },
+          "A32": {
+            "kind": "formula",
+            "source": "=A31/1000000000000000000000000000"
+          },
+          "A33": {
+            "kind": "formula",
+            "source": "=A32/1000000000000000000000000000"
+          },
+          "A34": {
+            "kind": "formula",
+            "source": "=A33/1000000000000000000000000000"
+          },
+          "A35": {
+            "kind": "formula",
+            "source": "=A34/1000000000000000000000000000"
+          },
+          "A36": {
+            "kind": "formula",
+            "source": "=A35/1000000000000000000000000000"
+          },
+          "A37": {
+            "kind": "formula",
+            "source": "=A36/1000000000000000000000000000"
+          },
+          "A38": {
+            "kind": "formula",
+            "source": "=A37/1000000000000000000000000000"
+          },
+          "A39": {
+            "kind": "formula",
+            "source": "=A38/1000000000000000000000000000"
+          },
+          "A4": {
+            "kind": "formula",
+            "source": "=A3/1000000000000000000000000000"
+          },
+          "A40": {
+            "kind": "formula",
+            "source": "=A39/1000000000000000000000000000"
+          },
+          "A41": {
+            "kind": "formula",
+            "source": "=A40/1000000000000000000000000000"
+          },
+          "A42": {
+            "kind": "formula",
+            "source": "=A41/1000000000000000000000000000"
+          },
+          "A43": {
+            "kind": "formula",
+            "source": "=A42/1000000000000000000000000000"
+          },
+          "A44": {
+            "kind": "formula",
+            "source": "=A43/1000000000000000000000000000"
+          },
+          "A5": {
+            "kind": "formula",
+            "source": "=A4/1000000000000000000000000000"
+          },
+          "A6": {
+            "kind": "formula",
+            "source": "=A5/1000000000000000000000000000"
+          },
+          "A7": {
+            "kind": "formula",
+            "source": "=A6/1000000000000000000000000000"
+          },
+          "A8": {
+            "kind": "formula",
+            "source": "=A7/1000000000000000000000000000"
+          },
+          "A9": {
+            "kind": "formula",
+            "source": "=A8/1000000000000000000000000000"
+          }
+        }
+      }
+    },
+    "expected": {
+      "A1": "1",
+      "A2": "1E-27",
+      "A3": "1E-54",
+      "A4": "1E-81",
+      "A5": "1E-108",
+      "A6": "1E-135",
+      "A7": "1E-162",
+      "A8": "1E-189",
+      "A9": "1E-216",
+      "A10": "1E-243",
+      "A11": "1E-270",
+      "A12": "1E-297",
+      "A13": "1E-324",
+      "A14": "1E-351",
+      "A15": "1E-378",
+      "A16": "1E-405",
+      "A17": "1E-432",
+      "A18": "1E-459",
+      "A19": "1E-486",
+      "A20": "1E-513",
+      "A21": "1E-540",
+      "A22": "1E-567",
+      "A23": "1E-594",
+      "A24": "1E-621",
+      "A25": "1E-648",
+      "A26": "1E-675",
+      "A27": "1E-702",
+      "A28": "1E-729",
+      "A29": "1E-756",
+      "A30": "1E-783",
+      "A31": "1E-810",
+      "A32": "1E-837",
+      "A33": "1E-864",
+      "A34": "1E-891",
+      "A35": "1E-918",
+      "A36": "1E-945",
+      "A37": "1E-972",
+      "A38": "1E-999",
+      "A39": "1E-1026",
+      "A40": "#NUM!",
+      "A41": "#NUM!",
+      "A42": "#NUM!",
+      "A43": "#NUM!",
+      "A44": "#NUM!"
+    }
+  }
+]

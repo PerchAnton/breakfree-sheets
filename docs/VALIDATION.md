@@ -1,56 +1,58 @@
-# Prototype validation
+# Rust native iteration validation
 
-Local environment: macOS, Python 3.14.3, Tk 8.6; 2026-10-16, Europe/Kyiv.
-This is evidence for the prototype, not a supported-platform or release claim.
+Local host: macOS / aarch64, Rust 1.99.1. The owner requires Rust throughout;
+Python/Tk results are historical evidence, not Rust GUI or Windows validation.
 
 | Check actually performed | Result |
 | :--- | :--- |
-| `BREAKFREE_GUI_TESTS=1 python3 -m unittest discover -s tests -v` | 46 tests passed, including 9 real-Tk tests; no skips |
-| Default headless suite | Core, persistence and CLI/build tests passed; desktop tests intentionally opt-in |
-| Parser/evaluator | Precedence, left associativity, unary minus, nested parentheses, ASCII references, syntax and resource bounds |
-| Recalculation | Required 5 → 7 scenario; chains including 2600 cells; diamonds; direct/indirect cycles and recovery; blank/text semantics |
-| Numbers/errors | Decimal 0.1+0.2, repeating division, half-even rounding, caller-context independence, overflow/underflow, division by signed zero |
-| History | Typed source restoration, formula/input undo/redo, deletion, redo branch replacement, saved-state comparison |
-| Persistence | Required round trip and further recalculation; Unicode and 00123; invalid/foreign/future/duplicate/unknown fields; failed write, flush and replace preserve prior bytes |
-| GUI | Actual entry widgets, selection, generated keyboard event, visible errors, Save/Open/New prompts including unapplied drafts, failed Save/Open preservation |
-| Open-current-file regression | Save during the Open prompt reloads newly saved bytes instead of showing a stale clean snapshot |
-| CLI | One exact JSON response, version, no Tk import in capabilities, absolute paths including Unicode/spaces, invalid arguments/files, GUI routing |
-| Standalone build | Byte-identical repeated zip builds; headless commands and real GUI initialization from an isolated directory with empty PYTHONPATH and embedded logo |
-| Additional launch | Built executable launched with the synthetic workbook from `/private/tmp` without a startup exception |
-| Source compatibility | All Python sources parsed using Python 3.10 grammar; this does not replace running Python 3.10 |
-| Documentation | Local Markdown links and image paths checked by `python3 tools/check_docs.py`; Markdown anchors and remote links are not exhaustively checked |
-| Repository/YAML | `git diff --check`; workflow and issue-template YAML syntax parsed by Ruby YAML |
-| Brand | Approved shared raster inspected; original/PNG hashes and pinned provenance recorded; no Sheets-specific logo found |
+| `cargo test --locked --no-default-features` | 20 Rust core/files/interaction/CLI tests passed; no GUI dependency needed |
+| `cargo test --locked` | 31 tests passed: 20 core/integration and 11 native egui component/event tests |
+| Frozen engine conformance | 35 synthetic scenarios from the preserved Python v1 engine passed in Rust, including decimal rounding/bounds, grammar, text/blank rules, errors, cycles and dependent values |
+| Required UI loop | Pointer/key events enter A1=2 and B1=3 in the grid; C1 formula entered in the real formula bar gives 5; grid replacement A1=4 gives 7; undo/redo, save/open and further formula-bar edit verified |
+| Grid/interaction | Shift/drag rectangular selection, address/range entry, F2/Escape, separate edit/selection modes, header width/height drag, wheel scroll with pinned headers, bounded visible-cell painting |
+| Clipboard | Native framework Copy/Cut/Paste events preserve typed identifiers; literal formula source, no range-reference translation claim |
+| Unsaved state | Rendered Save/Discard/Cancel controls include pending input; failed Save prevents destructive New; failed Open leaves current model/draft intact |
+| Persistence | Old `.bfsheet` example opens; Unicode/space paths; raw formulas survive; future/foreign/unknown/duplicate/malformed records rejected; oversized file rejected |
+| Failed saves | Partial write, flush and replace failures injected; previous bytes unchanged and temporary files cleaned |
+| Deep graph | All 2600 supported cells chained without recursion; correct further recalculation |
+| Numeric model | 28 digits, exact rational intermediates, half-even per operation; no binary float cell calculation or financial-correctness guarantee |
+| `cargo fmt --all -- --check` | Passed |
+| `cargo clippy --locked --all-targets --all-features -- -D warnings` | Passed, including the capture feature |
+| `cargo build --locked --release --offline` | Native optimized macOS binary built after cached dependency fetch |
+| Standalone executable | Copied release binary executes `--capabilities` and `--version` from an isolated directory outside the checkout; stderr empty |
+| Actual native output | Three macOS framebuffer captures at diagnostic UI scales 1.0/1.25/1.5; own logo, all zones and shared formula source inspected; see UI_SPEC |
+| Logo | Exact approved dedicated WebP; transparent corner alpha and opaque interior tested |
+| Historical baseline | Archived Python core 21 tests and persistence 10 tests still pass; Python is not needed by Rust builds/tests/runtime |
+| Documentation | Local links/image paths, journal/table checks where applicable, YAML syntax and `git diff --check` checked |
 
-The default suite deliberately skips `test_gui` unless `BREAKFREE_GUI_TESTS=1`.
-No test success badge is fabricated. Tests are standard-library `unittest` and
-require neither another project nor downloaded dependencies.
+Current native implementation is in `src/`, not a Python wrapper, JS table or
+WebView. The calculation engine has no GUI dependency. The product does not
+fetch another repository while building/running. Cargo.lock and the local
+contract/brand snapshots are versioned. Dependency notice texts and font notices
+are retained; the dependency inventory identifies remaining redistribution review.
 
-## Checks not completed locally
+## Required checks not available locally
 
-- Real Windows and Linux desktops, their launchers/file dialogs/keyboard behavior,
-  runtime installation and native packaging: those operating systems are not
-  available in this local environment.
-- Real Python 3.10 execution: only Python 3.14.3 is available locally.
-- Visual screenshot/accessibility-tree review: Computer Use reports that
-  permissions are not granted. Functional Tk tests did run through the desktop;
-  they do not prove visual layout or screen-reader accessibility.
-- Office protocol reconciliation and live launcher integration: the inspected
-  Office commit has no `contracts/v1/` or ADRs. Only the task's temporary baseline
-  is verified. Nothing is fetched from Office during build/run.
-- Power-cut recovery, filesystem directory-metadata durability, network filesystems,
-  concurrent external writers, screen readers, performance beyond the bounded grid,
-  installer signing and upgrade/uninstallation remain outside verified scope.
+- Actual Microsoft Excel 2024 for Windows: no accessible installation, exact build
+  identification, measured default geometry or matched reference screenshots.
+- Actual Windows display scaling at **100%, 125%, 150%**. The three diagnostic
+  macOS captures and headless scale tests are explicitly not replacements.
+- Interactive Windows/Linux file pickers, IME/system keyboard behavior, GPU-driver
+  variations, screen readers and native installer/signing/upgrade behavior.
+- Live Office launcher/spec reconciliation: its inspected commit remains
+  `cfaaf419e84d9981acd421d130113ca2265061fd` without contracts/v1 or ADRs. Only
+  the locally frozen task baseline is tested.
+- Power-loss durability, directory metadata sync guarantees, network filesystems,
+  concurrent external writers and crash recovery remain unverified.
 
-## Server CI and review
+[UI_SPEC](UI_SPEC.md) records verified documentary sources separately from
+unavailable visual evidence and gives the Windows matched-capture procedure.
+No visual identity, XLSX compatibility or supported-platform release is claimed.
 
-The workflow defines headless checks/builds for Windows, macOS and Linux on
-Python 3.10 and 3.14, plus real Tk GUI tests under Linux Xvfb. Definition alone is
-not a successful server run. For commit `71f009edb6e04220986f113f94c9ff380277cfcf`,
-[PR CI](https://github.com/PerchAnton/breakfree-sheets/actions/runs/38868572048) and
-[push CI](https://github.com/PerchAnton/breakfree-sheets/actions/runs/38868539526)
-both completed successfully: six headless matrix jobs and one Linux/Xvfb GUI job
-per run. This verifies actual Python 3.10 execution in CI, while interactive
-Windows/Linux and visual review remain unverified. Commit-specific observations, review status
-and unavailable checks are recorded separately in [PROJECT_LOG.md](PROJECT_LOG.md).
-No branch is automatically merged and no release workflow is present.
+## Server CI
+
+The native workflow defines Rust tests/builds/lints for Windows, macOS and Linux,
+plus a real Linux/Xvfb native-frame smoke test. The earlier Python CI cannot
+validate this port. New commit-specific server observations belong in
+[PROJECT_LOG.md](PROJECT_LOG.md); workflow definition is not server success.
+No automatic merge or release is configured.

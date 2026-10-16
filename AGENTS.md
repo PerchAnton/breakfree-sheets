@@ -1,6 +1,6 @@
 # Working in BreakFree Sheets
 
-Read README.md, ROADMAP.md, docs/REQUIREMENTS.md, CONTRIBUTING.md, existing ADRs and docs/PROJECT_LOG.md first. The repository contains an independent Python/Tk prototype with a provisional stack decision; the software license remains unselected.
+Read README.md, ROADMAP.md, docs/REQUIREMENTS.md, CONTRIBUTING.md, existing ADRs and docs/PROJECT_LOG.md first. The owner requires Rust for the complete independent native application and Microsoft Excel 2024 for Windows as the visual reference. The product identity is BreakFree Sheets. The software license remains unselected.
 
 ## Scope
 
@@ -8,7 +8,7 @@ Prioritize the grid, deterministic calculation behavior and reliable local persi
 
 ## Rules
 
-- Preserve the approved name and shared office-document logo.
+- Preserve the approved BreakFree Sheets name and dedicated Sheets logo with transparent exterior; follow the shared Office palette.
 - Keep public documentation in English; distinguish plans from verified features.
 - Obtain owner review for license, architecture and major dependency choices.
 - Define numeric semantics, type handling, reference behavior and error propagation explicitly.
@@ -21,7 +21,9 @@ Prioritize the grid, deterministic calculation behavior and reliable local persi
 
 ## Validation
 
-Run the headless tests and applicable opt-in GUI tests documented in README.md.
+Run `cargo test --locked --no-default-features`, `cargo test --locked`,
+`cargo fmt --all -- --check` and the applicable native capture checks documented
+in README.md. Headless egui tests do not replace real Windows DPI checks.
 Check Markdown links, local image references and YAML syntax. Report only checks
 that actually ran and distinguish them from pending platform/CI verification.
 
@@ -87,3 +89,30 @@ that actually ran and distinguish them from pending platform/CI verification.
 - If the private repository is unavailable, keep a prepared local copy and
   metadata, and explicitly report: «приватная копия не отправлена». Continue with
   the authorized publication that is possible; never imply both copies exist.
+
+## Owner decisions: Rust and Windows desktop reference
+
+- Rust is the required development language for workbook/cell models, parser,
+  dependency graph, calculation, undo/redo, persistence, Office integration and
+  the GUI. This supersedes the provisional Python/Tk decision in ADR 0001.
+- The active application must be a native desktop Rust application. Do not use
+  Electron, a WebView/HTML/JavaScript table, or Rust only as a backend for one.
+  The historical Python code is a conformance archive, never a runtime/build
+  dependency of the Rust product.
+- Use desktop Microsoft Excel 2024 for Windows as the layout/interaction target,
+  while retaining the BreakFree Sheets name, own approved transparent icon and
+  shared BreakFree palette. No Microsoft logo, invented Microsoft account,
+  compatibility claim or visual-identity claim without evidence.
+- Separate grid painting/interaction from the tested computation engine. Paint
+  only the visible viewport; do not allocate a heavyweight widget per cell.
+- Keep selection and editing modes explicit. Grid entry and formula bar must
+  share one draft backed by the same typed cell model. Display formatting never
+  rewrites stored content. Unsupported commands/fill/sort are explicitly disabled.
+- Preserve the File/ribbon, Home groups, name box, formula bar, headers, selection,
+  sheet-tab area, scrollbars and status/zoom layout. Record geometry, verified
+  reference sources and differences in docs/UI_SPEC.md. Distinguish simulated
+  scale tests from real Windows 100%, 125%, 150% measurements and matched screenshots.
+- Preserve working calculation semantics/native v1 data when porting language;
+  use conformance/regression tests. Do not replace a correct engine for cosmetic
+  changes. Rust is decided; toolkit evolution and project licensing remain
+  separate review topics. No automatic merge or release.

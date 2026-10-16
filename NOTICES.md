@@ -1,17 +1,27 @@
 # Dependency and asset notices
 
-This prototype contains original application code and synthetic workbook
-fixtures. It vendors no third-party Python packages or third-party source code.
-There are no fonts, downloaded test documents or remote runtime assets.
-The project software license remains an owner decision; none is selected here.
+The project owner has not selected a software or brand-asset license. This
+change does not choose one or grant third-party reuse rights to BreakFree.
+Application sources are original; fixtures are synthetic. No Microsoft code,
+logo, Office font or reference-product artwork is copied into the application.
 
-Python and Tcl/Tk are separately installed runtime prerequisites, not bundled in
-the zip application. Their distributors' notices and license terms continue to
-apply: [Python licensing](https://docs.python.org/3/license.html),
-[Tcl/Tk licensing](https://www.tcl-lang.org/software/tcltk/license.html).
-Any future runtime-bundled installer must include the actual runtime distribution's
-notices and receive a dependency/license review before publication.
+Rust runtime/build dependencies are declared in Cargo.toml and pinned by
+Cargo.lock. The [locked dependency inventory](third_party/NOTICES.md) preserves
+the declared license metadata and notice/license files shipped by those crates,
+including egui's default-font notices. Missing texts retrieved from upstream
+are pinned to each crate's original source Git SHA with provenance recorded.
+Remaining omissions are identified for review before redistribution. The inventory
+covers all resolved platforms/features, not a claim that every listed crate is
+linked into this target. It is not a completed binary-distribution license audit.
 
-The bundled project-owned BreakFree mark and its PNG derivative are documented
-in [brand provenance](docs/BRAND_PROVENANCE.md). No permission for unrelated reuse
-of that mark is granted by this document.
+Direct dependencies: egui/eframe, rfd, image, num-bigint, num-rational, num-traits,
+serde/serde_json and tempfile. Their declared license terms remain their own;
+they do not select a license for this project. Before any distributed installer,
+review the actual target dependency set and include its complete required notices.
+No release is made by this task.
+
+The approved project-owned Sheets icon is documented in
+[brand provenance](docs/BRAND_PROVENANCE.md). No external fonts are downloaded at
+runtime. The earlier Python/Tk prototype and its notices are preserved only as
+historical reference under legacy/python; Python/Tcl/Tk are not shipped with or
+required by the Rust product.

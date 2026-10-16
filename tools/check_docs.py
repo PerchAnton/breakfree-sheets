@@ -11,7 +11,7 @@ LINK = re.compile(r"!?\[[^\]]*\]\(([^\s)]+)(?:\s+[^)]*)?\)|(?:src|href)=[\"']([^
 def check() -> list[str]:
   errors = []
   for document in sorted(ROOT.rglob("*.md")):
-    if any(part in {".git", ".venv", "dist"} for part in document.relative_to(ROOT).parts):
+    if any(part in {".git", ".venv", "dist", "target", "artifacts"} for part in document.relative_to(ROOT).parts):
       continue
     for match in LINK.finditer(document.read_text(encoding="utf-8")):
       target = match[1] or match[2]

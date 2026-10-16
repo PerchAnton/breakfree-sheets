@@ -1,197 +1,138 @@
-<p align="center">
-  <a href="https://github.com/PerchAnton/breakfree-office"><img src="breakfree_sheets/assets/breakfree-icon.png" alt="Approved shared BreakFree mark" width="160" height="160"></a>
-</p>
-
+<p align="center"><img src="assets/breakfree-sheets.webp" alt="Approved BreakFree Sheets mark with transparent exterior" width="160" height="160"></p>
 <h1 align="center">BreakFree Sheets</h1>
+<p align="center"><strong>Your numbers. Your freedom.</strong><br>Independent native Rust spreadsheet prototype.</p>
 
-<p align="center">
-  <strong>Your numbers. Your freedom.</strong><br>
-  An independent local spreadsheet prototype.<br>
-  Organize data. Explore numbers. Make things add up.
-</p>
+> Working prototype for review. Rust is the owner's chosen language for every
+> application layer. Desktop Excel 2024 for Windows is the layout/interaction
+> target; the identity remains BreakFree Sheets. Visual identity, XLSX
+> compatibility and a supported-platform release are not claimed.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/status-prototype-248A83?style=flat-square" alt="Status: prototype">
-  <img src="https://img.shields.io/badge/focus-spreadsheets-248A83?style=flat-square" alt="Focus: spreadsheets">
-  <img src="https://img.shields.io/badge/suite-BreakFree%20Office-241337?style=flat-square" alt="Part of BreakFree Office">
-</p>
+## Build and run independently
 
-<p align="center">
-  <a href="#make-room-for-your-numbers">Vision</a> ·
-  <a href="ROADMAP.md">Roadmap</a> ·
-  <a href="docs/REQUIREMENTS.md">First milestone</a> ·
-  <a href="CONTRIBUTING.md">Contribute</a> ·
-  <a href="https://github.com/PerchAnton/breakfree-office">Office hub</a>
-</p>
-
----
-
-> [!IMPORTANT]
-> **Working prototype for review, not a public release.** One worksheet, typed cells,
-> restricted arithmetic formulas, dependency recalculation, undo/redo and local
-> `.bfsheet` save/open are implemented. No installers or XLSX compatibility are claimed.
-
-## Run independently
-
-Requires **Python 3.10+** with **Tk 8.6+** for the GUI. No Office, Docs, Slides,
-third-party Python packages, account, network or adjacent checkout is required.
-Only macOS Python 3.14.3 / Tk 8.6 has been tested locally so far. Windows/Linux
-instructions and CI definitions are provided; they are not a tested support promise.
-
-From this repository on macOS/Linux:
+Install Rust using the official [Rust toolchain installer](https://rustup.rs/).
+The repository pins Rust 1.99.1 and the resolved dependency graph in Cargo.lock.
+A native platform linker/SDK is required (Windows: Visual Studio Build Tools with
+Desktop development with C++; macOS: Xcode command-line tools). Linux native
+GUI builds need the usual X11/Wayland/OpenGL development libraries; see CI.
+There is no Office, Docs, Slides, Python, JavaScript frontend, WebView or account
+requirement. Only Cargo's first dependency download needs the registry; there
+are no build/runtime fetches of Office or mutable remote specifications.
 
 ```sh
-python3 -m breakfree_sheets --new
-./breakfree-sheets --capabilities
-./breakfree-sheets --version
-python3 -m breakfree_sheets --open "/absolute/path/My workbook.bfsheet"
+cargo build --locked
+cargo run --locked -- --new
+cargo run --locked -- --open "/absolute/path/My workbook.bfsheet"
+cargo run --locked -- --capabilities
+cargo run --locked -- --version
+cargo build --locked --release
 ```
 
-On Windows PowerShell, install Python with Tcl/Tk and the Python launcher enabled,
-then run from this repository:
+Windows PowerShell, from this repository:
 
 ```powershell
-py -3 -m breakfree_sheets --new
-.\breakfree-sheets.cmd --capabilities
-.\breakfree-sheets.cmd --version
-py -3 -m breakfree_sheets --open "C:\Users\You\Documents\My workbook.bfsheet"
+cargo build --locked --release
+.\target\release\breakfree-sheets.exe --new
+.\target\release\breakfree-sheets.exe --open "C:\Users\You\Documents\My workbook.bfsheet"
+.\target\release\breakfree-sheets.exe --capabilities
+.\target\release\breakfree-sheets.exe --version
 ```
 
-Check Tk with `python3 -m tkinter` (Windows: `py -3 -m tkinter`). Linux distributions
-may package Tk separately as `python3-tk`; use the package matching your interpreter.
-Headless commands and core tests work without Tk. A plain launch defaults to `--new`.
-`--open` accepts an absolute path as one argument, validates before opening a window,
-and never rewrites an input just because it was opened.
+macOS/Linux executable: `target/release/breakfree-sheets`. After dependencies
+have been fetched, `cargo build --locked --offline` works without a network.
+Copying the native executable to another directory does not require this checkout;
+its approved icon is embedded. Runtime system graphics libraries still apply.
+No native installer, signed package or public binary release is produced here.
 
-## Try the calculation loop
+## Work with real cells
 
-Select A1, choose **number**, enter `2` and press **Apply** or Enter. Set B1 to
-number `3`. Select C1, choose **formula**, enter `=A1+B1`: C1 displays `5`.
-Change A1 to `4`: C1 displays `7`. Save as `.bfsheet`, open it again, and edit A1:
-the formula remains a formula and recalculates. A synthetic starting book is
-included at [examples/first-workbook.bfsheet](examples/first-workbook.bfsheet).
+The light desktop layout has File and ribbon tabs, Home groups, a name box,
+formula bar, headers, active/range selection, sheet area, scrollbars and zoom.
+One sheet A1–Z100 is implemented. The grid paints only visible cells; it does
+not allocate a heavy widget for every possible cell.
 
-Blank cells default to **text**, so `00123` stays text. There is no implicit type
-conversion. Choose the type explicitly; formulas start with `=`. Clicking another
-cell applies the pending entry. Escape cancels it. Arrow keys and Tab/Enter navigate
-when the grid has focus; F2 or a double click focuses the source entry. Use the
-scrollbars for the rest of A1–Z100. New, Open and Close prompt for unsaved edits.
-Toolbar Undo/Redo (Ctrl+Z/Y, Command+Z/Y on macOS) operate on cell edits; an unapplied
-entry is cancelled first by Undo. Clear cell removes the cell, rather than storing
-empty text. The most recent 500 edits are retained per session.
+Click A1, type `2`, Enter. Set B1 to `3`. Select C1, click the formula bar, enter
+`=A1+B1`, Enter: C1 displays **5**. Replace A1 with `4` through the grid: C1
+becomes **7**. Undo returns it to 5; redo returns 7. Save as `.bfsheet`, open it
+again, and edit A1: the stored formula still recalculates. The synthetic
+[example workbook](examples/first-workbook.bfsheet) opens in the Rust application,
+including files created by the earlier prototype.
 
-The numeric model is decimal floating-point, 28 significant digits and half-even
-rounding for every operation. This is **not a financial-accuracy or compatibility
-guarantee**. See [numeric, blank and error semantics](docs/adr/0002-calculation-and-storage.md).
-Syntax, division-by-zero, cycle, reference, text-operand and numeric-limit errors
-are displayed explicitly. Unsupported functions, macros, external references and
-network formulas are never executed.
+Typing starts inline edit; F2 or double click edits existing source. The formula
+bar and inline cell share one draft. Enter/Tab commit and move; Shift reverses;
+Escape cancels. Arrows navigate in selection mode; Shift+arrows/drag select a
+range. The address box accepts `A1` or `A1:C4`. Drag header boundaries or use Home
+Cells dimensions to resize. Worksheet zoom is independent of system display DPI.
+View dimensions and zoom reset on New/Open; they are not persisted in native v1.
 
-## Test and build
+New blank-cell entry uses **Auto (safe)**: formulas start with `=`, canonical
+decimal input becomes Number, leading-zero identifiers such as `00123` stay Text.
+Existing cells retain their stored kind unless the user changes the selector.
+Choose Text/Number/Formula explicitly in Home Number when desired. Types and
+sources are stored separately from formatted results; decimal dots are explicit.
 
-No dependency installation is necessary:
+The engine supports `+ - * /`, parentheses, unary minus and single-cell references.
+It uses 28-digit decimal floating point with half-even rounding after every
+operation, calculated from exact rational intermediates. This is **not a financial
+accuracy guarantee**. Syntax, division-by-zero, cycles, text operands, invalid
+references and numeric/resource limits produce explicit errors. Macros, general
+code evaluation, external links and network formulas are never executed.
+
+Undo/redo retains 500 commands; Clear removes a selected range in one step.
+Clipboard buttons handle one typed cell and preserve literal formula references;
+range paste/reference translation are not implemented. Unsupported formatting,
+functions, fill, sort/filter, row insertion/deletion, charts and extra sheets
+are visibly disabled. Status has no fictitious Sum/Average/Count. New/Open/Close
+protect unsaved data and pending edits with Save/Discard/Cancel.
+
+## Validate
 
 ```sh
-python3 -m unittest discover -s tests -v
-BREAKFREE_GUI_TESTS=1 python3 -m unittest discover -s tests -v
-python3 tools/build.py
-python3 dist/breakfree-sheets --capabilities
-python3 dist/breakfree-sheets --new
+cargo test --locked --no-default-features
+cargo test --locked
+cargo fmt --all -- --check
+cargo clippy --locked --all-targets --all-features -- -D warnings
 ```
 
-The GUI tests need a real desktop. On Windows PowerShell:
+The first command tests the pure model/engine/files/Office CLI without compiling
+GUI dependencies. The default tests also feed real pointer/key/text events to
+the native Rust UI components, including grid → formula → recalc → undo → save →
+reopen. Those tests do not need a display and do not replace Windows DPI testing.
+The Rust conformance fixtures preserve 35 scenarios from the original Python v1
+engine; Python is not needed to run them. Historical source remains under
+[legacy/python](legacy/python/README.md), outside the product/build.
 
-```powershell
-py -3 -m unittest discover -s tests -v
-$env:BREAKFREE_GUI_TESTS = "1"
-py -3 -m unittest discover -s tests -v
-Remove-Item Env:BREAKFREE_GUI_TESTS
-py -3 tools/build.py
-.\dist\breakfree-sheets.cmd --new
-```
+See [validation evidence](docs/VALIDATION.md), [UI geometry, sources and real
+captures](docs/UI_SPEC.md), [owner decisions](docs/adr/0003-rust-native-desktop.md),
+[calculation/native-v1 semantics](docs/adr/0002-calculation-and-storage.md),
+[temporary Office contract](contracts/v1/SNAPSHOT.md) and [roadmap](ROADMAP.md).
+The available own-app screenshots are macOS captures. Actual Excel 2024 Windows
+comparison and Windows 100/125/150% display checks remain explicitly unverified.
 
-The deterministic zip application in `dist/` embeds the application and approved
-local assets; copy `breakfree-sheets` and, for Windows, `breakfree-sheets.cmd` together.
-Python/Tk remain runtime prerequisites. This is not a native installer or a release.
-Builds never fetch Office or a mutable remote specification. See
-[validation and remaining checks](docs/VALIDATION.md), [architecture](docs/adr/0001-independent-prototype.md),
-[the temporary Office contract](contracts/v1/SNAPSHOT.md) and [notices](NOTICES.md).
+## Development and independence
 
-## Make room for your numbers
-
-BreakFree Sheets aims to bring structure to lists, budgets, inventories and everyday analysis. Our starting point is a dependable grid with understandable calculations, not an immediate replacement for every Excel workflow.
-
-Clear errors and reproducible results matter more than a large function count.
-
-## The first useful workflow
-
-> **Enter data → Add a formula → Change an input → Recalculate → Save → Reopen.**
-
-The prototype implements this workflow with a single bounded worksheet. Its storage
-model and numeric semantics are documented in ADRs; platform and interoperability
-claims remain limited to the checks actually run.
-
-| Implemented for review | Investigate next | Outside the initial scope |
-| :--- | :--- | :--- |
-| Select and edit cells | Formatting, sort and filter | Full Excel feature parity |
-| Text, numbers and simple formulas | Multiple worksheets and charts | VBA and macros |
-| Recalculation and visible errors | CSV import/export with explicit options | Cloud collaboration |
-| Undo, redo, save and reopen | A documented XLSX subset | External data connections |
-
-See the [acceptance criteria](docs/REQUIREMENTS.md) and [roadmap](ROADMAP.md) for the proposed sequence.
-
-## Design direction
-
-**Trust the result.** Define calculation behavior, test edge cases and show errors instead of quietly returning a misleading value.
-
-**Respect the source data.** Make import choices explicit. A code with leading zeros, a date and a decimal value should not be silently treated as interchangeable.
-
-**Keep it in your control.** Prioritize local workbooks, offline essentials and clear file ownership. Network access and executable document content are outside the initial design.
-
-These principles guide the prototype and its next milestones; they do not imply a finished product.
-
-## File compatibility
-
-XLSX support is a development goal. Workbook structure, formulas, formatting and charts need separate test coverage and a published compatibility matrix. Unknown formulas must not be presented as verified calculations; unsupported workbook elements need an explicit handling policy.
-
-CSV is a separate import/export investigation with documented delimiter, quoting, encoding and type-inference choices. It is not a substitute for a full workbook format.
-
-## Development status
-
-| Area | Current position |
+| Area | State |
 | :--- | :--- |
-| Product direction | Documented |
-| Implementation language and UI toolkit | Python/Tk; reversible prototype ADR, owner review pending |
-| Formula engine and native workbook format | Restricted arithmetic engine; versioned `.bfsheet` JSON |
-| Windows, macOS and Linux | macOS GUI checked locally; all three headless CI targets and Linux/Xvfb GUI passed; interactive Windows/Linux review pending |
-| Application code and automated tests | Implemented; see [validation](docs/VALIDATION.md) |
-| Software license | Owner decision pending |
+| Language | Rust, owner-decided for the entire application |
+| GUI | Native Rust egui/eframe; provisional toolkit implementation, no web table |
+| Calculation/persistence | Restricted tested engine, native v1 `.bfsheet`, atomic replacement |
+| Office | Independent executable with v1 JSON/CLI; upstream contract reconciliation pending |
+| Compatibility | No CSV/XLSX or Excel numeric/visual parity claim |
+| License | Owner decision pending; no license selected |
+| Release | Draft review work only; no automatic merge or release |
 
-Sheets builds, tests and runs independently. Office integration uses a locally
-recorded temporary baseline; upstream `contracts/v1/` reconciliation is pending.
-There is no automatic release, telemetry, document upload or automatic update check.
+[BreakFree Office](https://github.com/PerchAnton/breakfree-office) is the suite hub.
+[Docs](https://github.com/PerchAnton/breakfree-docs) and
+[Slides](https://github.com/PerchAnton/breakfree-slides) remain separate applications.
+Sheets builds/tests/runs without their repositories or installations.
 
-## The BreakFree family
+Read [AGENTS.md](AGENTS.md), [CONTRIBUTING.md](CONTRIBUTING.md) and
+[the project journal](docs/PROJECT_LOG.md). The full journal is mirrored privately
+under the documented two-copy rule. People of every background, including
+LGBTQ+ contributors and users, are welcome; follow the shared
+[Code of Conduct](https://github.com/PerchAnton/breakfree-office/blob/main/CODE_OF_CONDUCT.md).
+Use synthetic examples and never upload confidential workbooks or credentials.
 
-| Project | Purpose |
-| :--- | :--- |
-| [**BreakFree Office**](https://github.com/PerchAnton/breakfree-office) | Suite hub, identity and shared direction |
-| [**BreakFree Docs**](https://github.com/PerchAnton/breakfree-docs) | Documents and writing |
-| **BreakFree Sheets** | Spreadsheets — you are here |
-| [**BreakFree Slides**](https://github.com/PerchAnton/breakfree-slides) | Presentations and visual storytelling |
-
-## Get involved
-
-Suggest a spreadsheet workflow, an anonymized calculation example or a focused technical investigation in [Issues](https://github.com/PerchAnton/breakfree-sheets/issues). Never upload confidential financial records or customer data. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) before preparing changes.
-
-Everyone is welcome, including LGBTQ+ contributors and users. Follow the [shared Code of Conduct](https://github.com/PerchAnton/breakfree-office/blob/main/CODE_OF_CONDUCT.md).
-
-## License and independence
-
-No software license has been selected; public visibility alone is not a reuse license. Licensing will be resolved before substantive third-party implementation contributions are accepted.
-
-BreakFree Sheets is independent and is not affiliated with Microsoft. Microsoft Excel and XLSX references describe intended workflows and interoperability goals, not endorsement or a completed replacement.
-
----
-
-<p align="center"><strong>BreakFree Office · Your work. Your freedom.</strong><br><sub>Created by <a href="https://github.com/PerchAnton">Anton Perchenko</a></sub></p>
+[Dependency/asset notices](NOTICES.md) preserve upstream terms and font notices;
+public repository visibility is not a project reuse license. BreakFree Sheets
+is independent and is not affiliated with Microsoft. No telemetry, automatic
+document upload, executable imports or automatic account sign-in is present.

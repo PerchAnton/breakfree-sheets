@@ -1,7 +1,7 @@
 # ADR 0002 — Calculation semantics and native content v1
 
 - Date: 2026-10-16
-- Status: implemented for the prototype; reviewable and versioned
+- Status: preserved by the Rust port in ADR 0003; reviewable and versioned
 - Integration protocol: temporary v1, recorded in [the snapshot](../../contracts/v1/SNAPSHOT.md)
 
 ## Cell content and display
@@ -12,9 +12,10 @@ must already be canonical. References outside A1–Z100 produce `#REF!`.
 
 A stored cell has exactly `{kind, source}`. `kind` is `text`, `number` or
 `formula`; `source` is a valid Unicode string of at most 4096 characters. Missing
-cells are blank. Empty *text* is still text. The entry type is explicit and
-defaults to Text for a blank cell. `00123` stays text; choosing Number is an
-intentional conversion. Dates, booleans and locale-based inference are absent.
+cells are blank. Empty *text* is still text. The Rust entry defaults to a documented safe Auto mode for a blank cell:
+`=` starts a formula; valid decimal input without leading integer zeros is a
+number; other input is text. `00123` stays text. Existing cells retain their kind
+unless the user selects another type; choosing Number is an intentional conversion. Dates, booleans and locale-based inference are absent.
 
 Numeric sources allow a sign, ASCII decimal digits and a dot, without grouping,
 whitespace, exponent notation, NaN or Infinity. Sources preserve trailing zeros
@@ -25,10 +26,12 @@ the entry contains the full source and the result line shows up to 600 character
 
 ## Numeric model
 
-Use decimal floating-point with **28 significant digits**, `ROUND_HALF_EVEN`,
+The Rust implementation preserves these numeric semantics using exact rational
+intermediates and explicit decimal rounding after each operation. It does not
+use binary floating-point for cell values. Use decimal floating-point with **28 significant digits**, `ROUND_HALF_EVEN`,
 `Emin=-999` and `Emax=999`. Numeric source/literals with more than 28 significant
-digits or adjusted exponents outside -999 through 999 are rejected. Each formula
-uses a fresh local decimal context independent of the caller's decimal settings.
+digits or adjusted exponents outside -999 through 999 are rejected. The rounding implementation
+is explicit and independent of process floating-point or locale settings.
 Each arithmetic operation rounds in that context, not just the final result.
 
 Exact subnormal arithmetic results can extend to exponent -1026. Inexact
@@ -78,7 +81,7 @@ numeric coercion occurs. Syntax errors remain stored and editable.
 
 Parse errors are reported at the first encountered invalid token/reference.
 Well-formed formulas contribute graph edges. An iterative topological pass
-evaluates prerequisites before dependents; lexical address ordering breaks ties.
+evaluates prerequisites before dependents; canonical coordinate ordering breaks ties.
 Unresolved graph nodes (cycles and their descendants) get `#CYCLE!`, which takes
 precedence over arithmetic in those cells. Other errors propagate; when a binary
 operation sees two errors, its left operand's error wins. Independent cells still
@@ -108,8 +111,9 @@ documents, invalid Unicode and files over 16 MiB are rejected. Invalid formulas
 are supported cell content and reopen with a visible error. Opening never writes
 to the source. The current workbook and pending entry survive a failed Open.
 
-Save serializes first, writes a same-directory temporary file, flushes and
-`fsync`s its contents, then uses `os.replace`. A failed write/flush/replacement
+The Rust file layer serializes first, writes a same-directory temporary file,
+flushes and syncs its contents, then uses `tempfile::NamedTempFile::persist` for
+platform replacement. The former Python prototype used `os.replace`. A failed write/flush/replacement
 leaves a prior valid destination untouched; tests inject failures. Temporary
 files are removed on handled failures. Saving through a symlink is refused.
 This uses the host's [atomic replacement semantics](https://docs.python.org/3.14/library/os.html#os.replace).

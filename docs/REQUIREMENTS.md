@@ -37,16 +37,19 @@ Imported formulas must be parsed as a restricted language, not passed to a gener
 
 | Scenarios | Evidence | Status |
 | :--- | :--- | :--- |
-| S01 | Tk mouse selection, source entry, keyboard events in `tests/test_gui.py` | Local macOS GUI checked; accessibility review pending |
-| S02–S06 | `tests/test_core.py`: explicit types, arithmetic, dependencies, errors and cycles | Local automated checks passed |
-| S07 | Headless history and GUI undo/redo scenarios | Local automated checks passed |
-| S08 | Headless and real-Tk save/open/recalculate scenarios | Local automated checks passed |
+| S01 | Rust egui pointer/key/source events in `tests_rust/desktop.rs` | Native macOS frame and Rust UI events checked; Windows DPI/accessibility review pending |
+| S02–S06 | `tests_rust/engine.rs`: explicit types, arithmetic, dependencies, errors and cycles | Local automated checks passed |
+| S07 | Rust history and rendered-component undo/redo events | Local automated checks passed |
+| S08 | Rust engine and UI-event save/open/recalculate scenarios | Local automated checks passed |
 | S09 | Pending-entry prompts, Cancel/Discard/Save, failed flush/replace and dirty-state tests | Local automated checks passed; power-loss recovery outside scope |
 | S10 | Foreign, malformed, unknown version/field, duplicate keys and source preservation | Local automated checks passed |
-| Office CLI | `tests/test_cli.py`, exact JSON fixture and isolated artifact execution | Local baseline verified; upstream spec reconciliation not performed |
+| Office CLI | `tests_rust/engine.rs`, exact JSON fixture and isolated artifact execution | Local baseline verified; upstream spec reconciliation not performed |
 
-Source files contain no Office/Docs/Slides imports or repository-relative runtime
-references. The build includes only this application's source and local assets.
+Rust application sources contain no Office/Docs/Slides imports or repository-relative runtime
+references. The build includes this application and locked Rust dependencies; the approved icon is embedded.
+Owner decisions require Rust throughout and the desktop Excel 2024 Windows UI
+reference. See [UI_SPEC.md](UI_SPEC.md) for geometry and unavailable Windows DPI
+comparisons. The historical Python sources are not a runtime dependency.
 
 ## Not included yet
 

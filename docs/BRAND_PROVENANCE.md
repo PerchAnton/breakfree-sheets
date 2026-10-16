@@ -1,23 +1,25 @@
 # Brand asset provenance
 
-There is no Sheets-specific approved logo in the inspected Sheets tree or
-Office tree. Use the existing approved shared office-document mark with the
-name **BreakFree Sheets** and the proposed Sheets teal `#248A83`; do not invent
-a replacement mark or claim a Sheets-specific asset exists.
+The active Rust application embeds the approved **dedicated Sheets mark** from
+[Sheets commit e7de5a9](https://github.com/PerchAnton/breakfree-sheets/commit/e7de5a9745c5b29527e38c9022b58d6b53a9b686),
+not the generic Office icon. The exact approved files and guidance are preserved
+under [docs/brand](brand/README.md). No logo was invented or redrawn.
 
-| Local asset | Origin and transformation |
+| Asset | Origin and processing |
 | :--- | :--- |
-| `breakfree_sheets/assets/breakfree-icon.webp` | Unchanged approved 192 × 192 shared mark from [Office commit cfaaf419](https://github.com/PerchAnton/breakfree-office/blob/cfaaf419e84d9981acd421d130113ca2265061fd/docs/brand/breakfree-icon.webp) |
-| `breakfree_sheets/assets/breakfree-icon.png` | Same pixels converted with macOS `sips -s format png` for Tk's built-in PNG loader |
+| `assets/breakfree-sheets.webp` | Exact bytes of `docs/brand/breakfree-sheets-transparent.webp` from e7de5a9, embedded with Rust include_bytes and decoded to RGBA at runtime |
+| `docs/brand/breakfree-sheets-transparent.webp` | Unmodified approved 192 × 192 WebP, transparent exterior around the purple tile |
+| `legacy/python/breakfree_sheets/assets/` | Historical shared Office mark, preserved only for the superseded prototype |
 
-SHA-256 of the WebP:
-`9ebb1cdd0a9c793fde66dfae26f6004c26362b5d4bd59fa2c7ce66db4b1c176c`.
+Active asset SHA-256: `b8da96ad1623ef1bb647907b39fabe93c3c30502c5bed738e4e3bcc667fed6bb`.
 
-SHA-256 of the PNG:
-`c203c2f286a0146efe1f2a5bac7ce3c66971642ff494c1f058f7ddd927a174b0`.
+Tests verify zero alpha at all four corners and opaque interior artwork. Actual
+light-background native captures are linked from [UI_SPEC](UI_SPEC.md). The
+transparent image is not flattened onto black or white. The small raster remains
+a display derivative, not a high-resolution/vector platform master.
 
-Source guide: [Office BRAND.md at the same commit](https://github.com/PerchAnton/breakfree-office/blob/cfaaf419e84d9981acd421d130113ca2265061fd/BRAND.md).
-Aubergine `#241337`, teal `#248A83` and paper `#FFFDF8` follow its proposed
-interface palette. Small raster derivatives are not platform icon masters.
-The owner's pending brand/software licensing decision is preserved; copying
-this project-owned asset into its own application grants no third-party rights.
+The shared palette is pinned to Office BRAND.md at
+[cfaaf419](https://github.com/PerchAnton/breakfree-office/blob/cfaaf419e84d9981acd421d130113ca2265061fd/BRAND.md):
+teal `#248A83`, aubergine `#241337`, light neutral chrome and a white worksheet.
+The owner has not selected a software/brand redistribution license; this file
+grants no unrelated reuse rights.

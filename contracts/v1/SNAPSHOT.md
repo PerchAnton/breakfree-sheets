@@ -28,7 +28,7 @@ The capabilities response has these required fields:
 | :--- | :--- |
 | `protocol_version` | Integer `1` |
 | `app_id` | `breakfree.sheets` |
-| `app_version` | Actual version from `breakfree_sheets.__version__` |
+| `app_version` | Actual version from Cargo package metadata (`CARGO_PKG_VERSION`) |
 | `display_name` | `BreakFree Sheets` |
 | `capabilities` | Array of implemented launch actions: `new`, `open` |
 | `formats` | Array of `{id, extensions, read, write}` records |
