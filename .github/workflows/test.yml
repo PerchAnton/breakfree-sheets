@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Linux native prerequisites
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxrandr-dev
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - run: cargo fmt --all -- --check
@@ -29,13 +29,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxrandr-dev xvfb
+      - run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxrandr-dev xvfb
       - run: rustup toolchain install 1.99.1 --profile minimal
       - run: cargo build --locked --features capture
       - name: Real native framebuffer smoke test (not Windows DPI evidence)
         run: |
           mkdir -p artifacts
-          xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 BREAKFREE_CAPTURE_CELL=C1 BREAKFREE_CAPTURE_TO="$GITHUB_WORKSPACE/artifacts/native-linux.png" ./target/debug/breakfree-sheets --open "$GITHUB_WORKSPACE/examples/first-workbook.bfsheet"
+          timeout 45s xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 BREAKFREE_CAPTURE_CELL=C1 BREAKFREE_CAPTURE_TO="$GITHUB_WORKSPACE/artifacts/native-linux.png" ./target/debug/breakfree-sheets --open "$GITHUB_WORKSPACE/examples/first-workbook.bfsheet"
       - uses: actions/upload-artifact@v4
         with:
           name: native-linux-frame

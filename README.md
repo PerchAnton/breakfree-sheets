@@ -13,7 +13,8 @@ Install Rust using the official [Rust toolchain installer](https://rustup.rs/).
 The repository pins Rust 1.99.1 and the resolved dependency graph in Cargo.lock.
 A native platform linker/SDK is required (Windows: Visual Studio Build Tools with
 Desktop development with C++; macOS: Xcode command-line tools). Linux native
-GUI builds need the usual X11/Wayland/OpenGL development libraries; see CI.
+GUI builds need X11/Wayland/OpenGL development libraries, including
+`libxkbcommon-x11-dev` on Ubuntu for the X11 runtime loader; see CI for the full list.
 There is no Office, Docs, Slides, Python, JavaScript frontend, WebView or account
 requirement. Only Cargo's first dependency download needs the registry; there
 are no build/runtime fetches of Office or mutable remote specifications.
