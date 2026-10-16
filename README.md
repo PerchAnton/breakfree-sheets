@@ -11,8 +11,10 @@
 > target; the identity remains BreakFree Sheets. Visual identity, XLSX
 > compatibility and a supported-platform release are not claimed.
 
-Current development candidate: **`0.1.0-alpha.1`**, awaiting owner version approval.
-No product release is published. See the [version and approval policy](docs/VERSIONING.md).
+Current development candidate: **`0.1.0-alpha.2`**, awaiting owner version approval.
+No product release is published. Every completed change increments the prerelease
+counter and is recorded in [CHANGELOG.md](CHANGELOG.md). See the
+[version and approval policy](docs/VERSIONING.md).
 
 ## Build and run independently
 

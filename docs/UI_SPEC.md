@@ -99,7 +99,9 @@ operations keep familiar gestures; unavailable ones do not pretend to execute.
 
 ## Captures and DPI verification
 
-Refreshed native Rust/OpenGL framebuffer captures were made on this macOS host with
+The captures below record the `0.1.0-alpha.1` design iteration; the File page
+therefore displays that historical build number. They are retained as visual
+evidence, not relabeled as a newer binary. Refreshed native Rust/OpenGL framebuffer captures were made on this macOS host with
 client size 1366 × 768 logical points, Retina native factor 2, white/light theme,
 `examples/first-workbook.bfsheet`, C1 selected, worksheet zoom 100%, fixed fonts
 and no pending edit. OS decorations are not part of the framebuffer. Each image

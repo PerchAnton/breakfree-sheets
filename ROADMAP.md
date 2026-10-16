@@ -3,7 +3,8 @@
 **Status: first independent prototype implemented for review.** Later stages
 remain planned. No release dates are committed. Initial prereleases use `0.1.0-alpha.N`,
 `0.1.0-beta.N`, then `0.1.0-rc.N`; the first stable product release is `0.2.0`.
-See [version approval](docs/VERSIONING.md). Code readiness, local test
+Every completed changeset increments the prerelease counter and updates
+[CHANGELOG.md](CHANGELOG.md). See [version approval](docs/VERSIONING.md). Code readiness, local test
 results, CI, owner review, merge and release are separate states.
 
 | Stage | Dependencies | Completion criteria | Required checks | Status |

@@ -21,5 +21,10 @@ commit. Distinguish local tests, remote CI, review, merge and release.
 Follow the [version and approval policy](docs/VERSIONING.md). All initial alpha,
 beta and release-candidate builds use the `0.1.0` base; the first stable product
 release is `0.2.0`. End every task report with the actual current application
-version and its owner-approval status. A version proposal does not authorize
-publication or an automatic increment.
+version and its owner-approval status. Every completed changeset, including
+changes limited to tests, configuration or documentation, increments the current
+prerelease counter by one and adds a dated entry to [CHANGELOG.md](CHANGELOG.md).
+The implementation and its accompanying validation/changelog/journal commits
+share that version. Further independent changes require the next number.
+Preparing the next candidate is authorized by this policy; agreeing to its exact
+number, promoting channels and publishing releases remain separate decisions.

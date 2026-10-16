@@ -90,9 +90,17 @@ that actually ran and distinguish them from pending platform/CI verification.
 - End every final task report with the current version and its approval status,
   presenting a pending version to the owner for agreement. Read the current
   value; do not guess it or claim approval from silence.
-- Do not increment automatically after each task or promote a release channel
-  without owner approval. Keep Cargo.lock, the capabilities fixture and current
-  version documentation consistent with each proposed change.
+- Every completed project changeset must increment the current prerelease counter
+  by one and add a dated entry to CHANGELOG.md, including code, UI, tests,
+  configuration and documentation-only changes. Prepare the next candidate
+  under this standing owner instruction; present the actual number for agreement.
+- Treat the implementation, its verification, changelog and separate journal
+  commit as one changeset. Intermediate edits and accompanying records do not
+  recursively trigger another increment. A subsequent independent change does.
+- Keep Cargo.lock, the capabilities fixture, README and current version policy
+  consistent. Retain previous changelog entries. A read-only check changes no
+  version; a repository update resulting from it does.
+- Channel promotion and release publication still require separate owner approval.
 - Version agreement and release publication are separate decisions. No automatic
   tags, releases, merges or published-history rewrites. Keep released versions
   immutable. App, integration-protocol and workbook-content versions are separate.
