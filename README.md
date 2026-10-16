@@ -163,7 +163,7 @@ CSV is a separate import/export investigation with documented delimiter, quoting
 | Product direction | Documented |
 | Implementation language and UI toolkit | Python/Tk; reversible prototype ADR, owner review pending |
 | Formula engine and native workbook format | Restricted arithmetic engine; versioned `.bfsheet` JSON |
-| Windows, macOS and Linux | macOS tested locally; Windows/Linux CI and desktop verification pending |
+| Windows, macOS and Linux | macOS GUI checked locally; all three headless CI targets and Linux/Xvfb GUI passed; interactive Windows/Linux review pending |
 | Application code and automated tests | Implemented; see [validation](docs/VALIDATION.md) |
 | Software license | Owner decision pending |
 

@@ -46,6 +46,11 @@ require neither another project nor downloaded dependencies.
 
 The workflow defines headless checks/builds for Windows, macOS and Linux on
 Python 3.10 and 3.14, plus real Tk GUI tests under Linux Xvfb. Definition alone is
-not a successful server run. Commit-specific server observations, review status
+not a successful server run. For commit `71f009edb6e04220986f113f94c9ff380277cfcf`,
+[PR CI](https://github.com/PerchAnton/breakfree-sheets/actions/runs/38868572048) and
+[push CI](https://github.com/PerchAnton/breakfree-sheets/actions/runs/38868539526)
+both completed successfully: six headless matrix jobs and one Linux/Xvfb GUI job
+per run. This verifies actual Python 3.10 execution in CI, while interactive
+Windows/Linux and visual review remain unverified. Commit-specific observations, review status
 and unavailable checks are recorded separately in [PROJECT_LOG.md](PROJECT_LOG.md).
 No branch is automatically merged and no release workflow is present.
