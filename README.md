@@ -55,6 +55,13 @@ No native installer, signed package or public binary release is produced here.
 
 The light desktop layout has File and ribbon tabs, Home groups, a name box,
 formula bar, headers, active/range selection, sheet area, scrollbars and zoom.
+Home uses compact icon groups; File opens the working local document page with
+New/Open/Save/Save As/Close and unsaved-change protection.
+
+![Native BreakFree Sheets layout](docs/screenshots/macos-diagnostic-100.png)
+
+*Actual macOS application frame; Windows reference comparison remains pending.*
+
 One sheet A1–Z100 is implemented. The grid paints only visible cells; it does
 not allocate a heavy widget for every possible cell.
 
@@ -69,14 +76,14 @@ Typing starts inline edit; F2 or double click edits existing source. The formula
 bar and inline cell share one draft. Enter/Tab commit and move; Shift reverses;
 Escape cancels. Arrows navigate in selection mode; Shift+arrows/drag select a
 range. The address box accepts `A1` or `A1:C4`. Drag header boundaries or use Home
-Cells dimensions to resize. Worksheet zoom is independent of system display DPI.
+Cells → Format to resize. Worksheet zoom is independent of system display DPI.
 View dimensions and zoom reset on New/Open; they are not persisted in native v1.
 
 New blank-cell entry uses **Auto (safe)**: formulas start with `=`, canonical
 decimal input becomes Number, leading-zero identifiers such as `00123` stay Text.
 F2/formula-bar edits retain the stored kind unless the selector changes. Typing
 a complete replacement in selection mode applies safe Auto inference again.
-Choose Text/Number/Formula explicitly in Home Number when desired. Types and
+Choose Text/Number/Formula explicitly using Home Number → Cell type when desired. Types and
 sources are stored separately from formatted results; decimal dots are explicit.
 
 The engine supports `+ - * /`, parentheses, unary minus and single-cell references.

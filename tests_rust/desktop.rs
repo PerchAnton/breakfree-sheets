@@ -11,6 +11,7 @@ struct Desktop {
     app: Application,
     context: Context,
     time: f64,
+    size: eframe::egui::Vec2,
 }
 impl Desktop {
     fn new(scale: f32) -> Self {
@@ -20,6 +21,7 @@ impl Desktop {
             app: Application::new(Session::default()),
             context,
             time: 0.0,
+            size: vec2(1366.0, 768.0),
         };
         this.frame(vec![]);
         this.frame(vec![]);
@@ -28,7 +30,7 @@ impl Desktop {
     fn frame(&mut self, events: Vec<Event>) {
         self.time += 0.05;
         let input = RawInput {
-            screen_rect: Some(Rect::from_min_size(Pos2::ZERO, vec2(1366.0, 768.0))),
+            screen_rect: Some(Rect::from_min_size(Pos2::ZERO, self.size)),
             time: Some(self.time),
             events,
             ..Default::default()
@@ -376,4 +378,144 @@ fn wheel_scroll_moves_data_but_keeps_headers_and_bounded_painting() {
     assert!(h.app.probes.cell_origin.y < before.y);
     assert_eq!(h.app.probes.grid.top(), top);
     assert!(h.app.probes.painted_cells < 1000);
+}
+
+#[test]
+fn ribbon_commands_use_real_history_clipboard_and_formula_draft() {
+    let mut h = Desktop::new(1.0);
+    h.grid_enter("A1", "00123");
+    h.cell("A1");
+    h.click(h.app.probes.commands["copy"].center(), Modifiers::NONE);
+    h.cell("B1");
+    h.click(h.app.probes.commands["paste"].center(), Modifiers::NONE);
+    assert_eq!(h.value("B1"), "00123");
+    assert_eq!(
+        h.app
+            .session
+            .editor
+            .book
+            .get("B1".parse().unwrap())
+            .unwrap()
+            .kind,
+        Kind::Text
+    );
+    h.click(h.app.probes.commands["clear"].center(), Modifiers::NONE);
+    assert!(
+        h.app
+            .session
+            .editor
+            .book
+            .get("B1".parse().unwrap())
+            .is_none()
+    );
+    h.click(h.app.probes.commands["undo"].center(), Modifiers::NONE);
+    assert_eq!(h.value("B1"), "00123");
+    h.click(h.app.probes.commands["redo"].center(), Modifiers::NONE);
+    assert!(
+        h.app
+            .session
+            .editor
+            .book
+            .get("B1".parse().unwrap())
+            .is_none()
+    );
+    h.cell("C1");
+    h.click(h.app.probes.formula.center(), Modifiers::NONE);
+    h.text("=2+3");
+    h.click(
+        h.app.probes.commands["apply-entry"].center(),
+        Modifiers::NONE,
+    );
+    assert_eq!(h.value("C1"), "5");
+    h.click(h.app.probes.formula.center(), Modifiers::NONE);
+    h.key(Key::A, command());
+    h.text("=4+3");
+    h.click(
+        h.app.probes.commands["cancel-entry"].center(),
+        Modifiers::NONE,
+    );
+    assert_eq!(h.value("C1"), "5");
+    assert_eq!(h.app.session.draft.source, "=2+3");
+    let book = h.app.session.editor.book.clone();
+    h.click(h.app.probes.commands["zoom-in"].center(), Modifiers::NONE);
+    assert!((h.app.metrics.zoom - 1.1).abs() < 0.001);
+    assert_eq!(h.app.session.editor.book, book);
+}
+
+#[test]
+fn file_page_preserves_drafts_blocks_cell_keys_and_uses_save_protection() {
+    let mut h = Desktop::new(1.0);
+    h.cell("A1");
+    h.text("00123");
+    h.click(h.app.probes.commands["file"].center(), Modifiers::NONE);
+    assert!(h.app.probes.commands.contains_key("file-new"));
+    h.text("ignored");
+    h.key(Key::ArrowRight, Modifiers::NONE);
+    assert_eq!(h.app.session.draft.source, "00123");
+    assert_eq!(h.app.session.selection.label(), "A1");
+    h.click(h.app.probes.commands["file-new"].center(), Modifiers::NONE);
+    h.click(h.app.probes.confirm_cancel.center(), Modifiers::NONE);
+    assert!(h.app.probes.commands.contains_key("file-new"));
+    assert_eq!(h.app.session.draft.source, "00123");
+    h.key(Key::Escape, Modifiers::NONE);
+    assert!(h.app.probes.commands.contains_key("file"));
+    assert_eq!(h.app.session.draft.source, "00123");
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("saved-from-file.bfsheet");
+    h.app.session.path = Some(path.clone());
+    h.click(h.app.probes.commands["file"].center(), Modifiers::NONE);
+    h.click(h.app.probes.commands["file-save"].center(), Modifiers::NONE);
+    assert!(h.app.probes.commands.contains_key("file"));
+    assert_eq!(
+        persistence::load(&path)
+            .unwrap()
+            .get("A1".parse().unwrap())
+            .unwrap()
+            .source,
+        "00123"
+    );
+    assert!(!h.app.session.dirty());
+    h.click(h.app.probes.commands["file"].center(), Modifiers::NONE);
+    h.click(h.app.probes.commands["file-new"].center(), Modifiers::NONE);
+    assert!(h.app.session.editor.book.cells().is_empty());
+}
+
+#[test]
+fn ribbon_group_baselines_and_unsupported_commands_are_stable() {
+    let mut h = Desktop::new(1.0);
+    let groups = h.app.probes.ribbon_groups.clone();
+    assert_eq!(groups.len(), 7);
+    for pair in groups.windows(2) {
+        assert!(pair[0].right() <= pair[1].left());
+        assert_eq!(pair[0].top(), pair[1].top());
+        assert_eq!(pair[0].bottom(), pair[1].bottom());
+    }
+    assert!(groups[6].right() < 1366.0);
+    assert!(groups[0].bottom() < h.app.probes.formula.top());
+    h.grid_enter("A1", "2");
+    let book = h.app.session.editor.book.clone();
+    // Disabled formatting controls remain inert rather than pretending to format data.
+    h.click(groups[1].center(), Modifiers::NONE);
+    h.click(groups[4].center(), Modifiers::NONE);
+    assert_eq!(h.app.session.editor.book, book);
+}
+
+#[test]
+fn narrow_ribbon_reserves_space_for_scrollbar_without_clipping_group_captions() {
+    for width in [1366.0, 1093.0, 980.0, 910.0] {
+        let mut h = Desktop::new(1.0);
+        h.size = vec2(width, 768.0);
+        for _ in 0..4 {
+            h.frame(vec![]);
+        }
+        let viewport = h.app.probes.ribbon_viewport;
+        for group in &h.app.probes.ribbon_groups {
+            assert!(
+                group.bottom() <= viewport.bottom(),
+                "caption clipped at width {width}: {group:?} vs {viewport:?}"
+            );
+        }
+        assert!(h.app.probes.formula.right() <= width);
+        assert!(h.app.probes.grid.height() > 350.0);
+    }
 }

@@ -1,5 +1,7 @@
 //! Native Rust desktop application. Painting and interaction never evaluate formulas.
+mod chrome;
 mod grid;
+mod icons;
 mod ribbon;
 use crate::{
     cells::Cell,
@@ -12,6 +14,9 @@ pub const TEAL: Color32 = Color32::from_rgb(36, 138, 131);
 pub const INK: Color32 = Color32::from_rgb(36, 19, 55);
 #[derive(Clone)]
 pub struct Probes {
+    pub commands: std::collections::BTreeMap<&'static str, Rect>,
+    pub ribbon_groups: Vec<Rect>,
+    pub ribbon_viewport: Rect,
     pub formula: Rect,
     pub name: Rect,
     pub grid: Rect,
@@ -25,6 +30,9 @@ pub struct Probes {
 impl Default for Probes {
     fn default() -> Self {
         Self {
+            commands: Default::default(),
+            ribbon_groups: Vec::new(),
+            ribbon_viewport: Rect::NOTHING,
             formula: Rect::NOTHING,
             name: Rect::NOTHING,
             grid: Rect::NOTHING,
@@ -48,6 +56,7 @@ pub struct Application {
     pub metrics: GridMetrics,
     pub probes: Probes,
     tab: String,
+    backstage: bool,
     name: String,
     logo: Option<TextureHandle>,
     pending: Option<Action>,
@@ -67,6 +76,7 @@ impl Application {
             metrics: GridMetrics::default(),
             probes: Probes::default(),
             tab: "Home".into(),
+            backstage: false,
             name,
             logo: None,
             pending: None,
@@ -92,6 +102,14 @@ impl Application {
             style.spacing.scroll.bar_width = 12.0;
             style.visuals.selection.bg_fill = TEAL;
             style.visuals.selection.stroke = Stroke::new(1.0_f32, Color32::WHITE);
+            style.visuals.panel_fill = Color32::WHITE;
+            style.visuals.disabled_alpha = 0.72;
+            style.visuals.extreme_bg_color = Color32::WHITE;
+            style.visuals.widgets.inactive.bg_fill = Color32::from_gray(222);
+            style.visuals.widgets.inactive.weak_bg_fill = Color32::WHITE;
+            style.visuals.widgets.inactive.bg_stroke =
+                Stroke::new(1.0_f32, Color32::from_gray(208));
+            style.visuals.widgets.hovered.bg_fill = Color32::from_rgb(230, 241, 239);
             style.visuals.widgets.active.bg_fill = Color32::from_rgb(220, 239, 235);
             style.visuals.widgets.inactive.corner_radius = CornerRadius::same(2);
             style
@@ -148,6 +166,21 @@ impl Application {
     }
     fn keyboard(&mut self, ctx: &Context) {
         if self.pending.is_some() {
+            return;
+        }
+        if self.backstage {
+            if ctx.input(|i| i.key_pressed(Key::Escape)) {
+                self.backstage = false;
+            }
+            if ctx.input(|i| i.modifiers.command && i.key_pressed(Key::S)) {
+                self.save(false);
+            }
+            if ctx.input(|i| i.modifiers.command && i.key_pressed(Key::N)) {
+                self.request(Action::New, ctx);
+            }
+            if ctx.input(|i| i.modifiers.command && i.key_pressed(Key::O)) {
+                self.choose_open(ctx);
+            }
             return;
         }
         let events = ctx.input(|i| i.events.clone());
@@ -302,6 +335,7 @@ impl Application {
         }
     }
     fn execute(&mut self, action: Action, ctx: &Context) {
+        self.backstage = false;
         match action {
             Action::New => {
                 self.session = Session::default();
@@ -353,25 +387,6 @@ impl Application {
             self.session.reset_draft();
         }
     }
-    fn formula_bar(&mut self, ctx: &Context) {
-        TopBottomPanel::top("formula-bar").exact_height(32.0).frame(Frame::NONE.fill(Color32::WHITE).inner_margin(Margin::symmetric(6, 4))).show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                let name = ui.add_sized([94.0, 24.0], TextEdit::singleline(&mut self.name).id(Id::new("name-box")));
-                self.probes.name = name.rect;
-                if name.lost_focus() && ui.input(|i| i.key_pressed(Key::Enter)) {
-                    let result = self.session.go_to(&self.name); if self.report(result) { self.selected(); }
-                }
-                ui.separator();
-                if ui.small_button("×").on_hover_text("Cancel entry (Escape)").clicked() { self.session.reset_draft(); self.reset_focus(ctx); }
-                if ui.small_button("OK").on_hover_text("Apply entry").clicked() { let result=self.session.commit(); self.report(result); self.reset_focus(ctx); }
-                ui.add_enabled(false, Button::new("fx")).on_disabled_hover_text("Functions are not implemented; arithmetic and cell references are available");
-                let response = ui.add_sized([ui.available_width(), 24.0], TextEdit::singleline(&mut self.session.draft.source).id(Id::new("formula-source")).font(FontId::proportional(13.0)));
-                self.probes.formula = response.rect;
-                if response.has_focus() { self.session.surface = Surface::Formula; }
-                if response.changed() { self.session.surface = Surface::Formula; }
-            });
-        });
-    }
     pub fn ui(&mut self, ctx: &Context) {
         self.configure(ctx);
         #[cfg(feature = "capture")]
@@ -384,225 +399,22 @@ impl Application {
             self.pending = Some(Action::Close);
         }
         self.keyboard(ctx);
+        self.probes.commands.clear();
         ctx.send_viewport_cmd(ViewportCommand::Title(self.session.title()));
-        TopBottomPanel::top("title-strip")
-            .exact_height(34.0)
-            .frame(
-                Frame::NONE
-                    .fill(Color32::from_rgb(245, 247, 247))
-                    .inner_margin(Margin::symmetric(8, 4)),
-            )
-            .show(ctx, |ui| {
-                ui.horizontal(|ui| {
-                    if let Some(logo) = &self.logo {
-                        ui.image((logo.id(), vec2(24.0, 24.0)));
-                    }
-                    ui.label(RichText::new("BreakFree Sheets").color(INK).strong());
-                    ui.separator();
-                    if ui.small_button("Save").clicked() {
-                        self.save(false);
-                    }
-                    if ui
-                        .add_enabled(
-                            self.session.editor.can_undo() || self.session.draft_dirty(),
-                            Button::new("Undo"),
-                        )
-                        .on_hover_text("Undo (Ctrl+Z)")
-                        .clicked()
-                    {
-                        self.session.undo();
-                        self.selected();
-                    }
-                    if ui
-                        .add_enabled(self.session.editor.can_redo(), Button::new("Redo"))
-                        .on_hover_text("Redo (Ctrl+Y)")
-                        .clicked()
-                    {
-                        self.session.redo();
-                        self.selected();
-                        self.reset_focus(ctx);
-                    }
-                    ui.separator();
-                    ui.label(self.session.title().replace(" — BreakFree Sheets", ""));
-                });
-            });
-        TopBottomPanel::top("ribbon-tabs")
-            .exact_height(28.0)
-            .frame(
-                Frame::NONE
-                    .fill(Color32::from_rgb(250, 251, 251))
-                    .inner_margin(Margin::symmetric(8, 2)),
-            )
-            .show(ctx, |ui| {
-                ui.style_mut().visuals.selection.bg_fill = Color32::TRANSPARENT;
-                ui.horizontal(|ui| {
-                    ui.menu_button(RichText::new("File").color(TEAL).strong(), |ui| {
-                        if ui.button("New   Ctrl+N").clicked() {
-                            ui.close();
-                            self.request(Action::New, ctx);
-                        }
-                        if ui.button("Open…   Ctrl+O").clicked() {
-                            ui.close();
-                            self.choose_open(ctx);
-                        }
-                        if ui.button("Save   Ctrl+S").clicked() {
-                            ui.close();
-                            self.save(false);
-                        }
-                        if ui.button("Save As…").clicked() {
-                            ui.close();
-                            self.save(true);
-                        }
-                        ui.separator();
-                        if ui.button("Close").clicked() {
-                            ui.close();
-                            self.request(Action::Close, ctx);
-                        }
-                    });
-                    for tab in [
-                        "Home",
-                        "Insert",
-                        "Page Layout",
-                        "Formulas",
-                        "Data",
-                        "Review",
-                        "View",
-                        "Help",
-                    ] {
-                        let selected = self.tab == tab;
-                        let response = ui.selectable_label(
-                            selected,
-                            RichText::new(tab).color(if selected {
-                                TEAL
-                            } else {
-                                Color32::from_gray(45)
-                            }),
-                        );
-                        if response.clicked() {
-                            self.tab = tab.into();
-                        }
-                        if selected {
-                            ui.painter().line_segment(
-                                [response.rect.left_bottom(), response.rect.right_bottom()],
-                                Stroke::new(2.0_f32, TEAL),
-                            );
-                        }
-                    }
-                });
-            });
-        TopBottomPanel::top("ribbon")
-            .exact_height(110.0)
-            .frame(
-                Frame::NONE
-                    .fill(Color32::from_rgb(247, 248, 248))
-                    .inner_margin(Margin::symmetric(6, 3)),
-            )
-            .show(ctx, |ui| {
-                ui.add_enabled_ui(self.pending.is_none(), |ui| {
-                    if self.tab == "Home" {
-                        self.home(ui, ctx);
-                    } else {
-                        ui.label(
-                            RichText::new(format!(
-                                "{} commands are not available in this iteration.",
-                                self.tab
-                            ))
-                            .weak(),
-                        );
-                        ui.add_enabled(false, Button::new("Not implemented"))
-                            .on_disabled_hover_text(
-                                "This tab is reserved; no operation is simulated",
-                            );
-                    }
-                });
-            });
-        self.formula_bar(ctx);
-        if let Some(error) = self.error.clone() {
-            TopBottomPanel::top("message")
-                .frame(
-                    Frame::NONE
-                        .fill(Color32::from_rgb(255, 241, 230))
-                        .inner_margin(4),
-                )
+        self.title_strip(ctx);
+        if self.backstage {
+            self.file_page(ctx);
+        } else {
+            self.ribbon_chrome(ctx);
+            self.formula_bar(ctx);
+            self.message_bar(ctx);
+            self.bottom_chrome(ctx);
+            CentralPanel::default()
+                .frame(Frame::NONE.fill(Color32::WHITE))
                 .show(ctx, |ui| {
-                    ui.horizontal(|ui| {
-                        ui.label(RichText::new(error).color(Color32::from_rgb(140, 45, 24)));
-                        if ui.small_button("Dismiss").clicked() {
-                            self.error = None;
-                        }
-                    });
+                    ui.add_enabled_ui(self.pending.is_none(), |ui| self.grid(ui, ctx));
                 });
         }
-        TopBottomPanel::bottom("status")
-            .exact_height(24.0)
-            .frame(
-                Frame::NONE
-                    .fill(Color32::from_rgb(244, 246, 245))
-                    .inner_margin(Margin::symmetric(8, 2)),
-            )
-            .show(ctx, |ui| {
-                ui.horizontal(|ui| {
-                    ui.label(match self.session.surface {
-                        Surface::Selection => "Ready",
-                        Surface::Grid => "Edit",
-                        Surface::Formula => "Enter",
-                    });
-                    ui.separator();
-                    ui.label(format!("{}  ·  Sheet1", self.session.selection.label()));
-                    if let Some(value) = self
-                        .session
-                        .editor
-                        .values
-                        .get(&self.session.selection.active)
-                        && let crate::cells::Value::Error(error) = value
-                    {
-                        ui.label(
-                            RichText::new(format!("{} {}", error.code, error.message))
-                                .color(Color32::DARK_RED),
-                        );
-                    }
-                    ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                        ui.label(format!("{}%", (self.metrics.zoom * 100.0).round()));
-                        ui.add(
-                            Slider::new(&mut self.metrics.zoom, 0.5..=2.0)
-                                .show_value(false)
-                                .step_by(0.05),
-                        );
-                        if ui.small_button("100%").clicked() {
-                            self.metrics.zoom = 1.0;
-                        }
-                    });
-                });
-            });
-        TopBottomPanel::bottom("sheet-tabs")
-            .exact_height(28.0)
-            .frame(
-                Frame::NONE
-                    .fill(Color32::from_rgb(244, 246, 245))
-                    .inner_margin(Margin::symmetric(6, 2)),
-            )
-            .show(ctx, |ui| {
-                ui.style_mut().visuals.selection.bg_fill = Color32::TRANSPARENT;
-                ui.horizontal(|ui| {
-                    for label in ["◀", "▶"] {
-                        ui.add_enabled(false, Button::new(label))
-                            .on_disabled_hover_text("Only one worksheet is supported");
-                    }
-                    let tab =
-                        ui.selectable_label(true, RichText::new("Sheet1").color(TEAL).strong());
-                    ui.painter().line_segment(
-                        [tab.rect.left_bottom(), tab.rect.right_bottom()],
-                        Stroke::new(2.0_f32, TEAL),
-                    );
-                    ui.add_enabled(false, Button::new("+"))
-                        .on_disabled_hover_text("Adding worksheets is not implemented yet");
-                });
-            });
-        CentralPanel::default()
-            .frame(Frame::NONE.fill(Color32::WHITE))
-            .show(ctx, |ui| {
-                self.grid(ui, ctx);
-            });
         if let Some(action) = self.pending.clone() {
             Window::new("Unsaved changes")
                 .collapsible(false)
@@ -699,6 +511,10 @@ pub fn run(session: Session) -> eframe::Result {
             if let Ok(address) = std::env::var("BREAKFREE_CAPTURE_CELL") {
                 let _ = app.session.go_to(&address);
                 app.selected();
+            }
+            #[cfg(feature = "capture")]
+            if std::env::var("BREAKFREE_CAPTURE_VIEW").as_deref() == Ok("file") {
+                app.backstage = true;
             }
             let _ = &mut app;
             Ok(Box::new(app))

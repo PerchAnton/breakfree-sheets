@@ -69,7 +69,7 @@ impl Application {
                         painter.rect_stroke(
                             rect,
                             0,
-                            Stroke::new(0.6_f32, Color32::from_gray(217)),
+                            Stroke::new(0.5_f32, Color32::from_gray(218)),
                             StrokeKind::Inside,
                         );
                         if let Some(value) = self.session.editor.values.get(&cell) {
@@ -143,6 +143,12 @@ impl Application {
                         Stroke::new(0.6_f32, Color32::from_gray(205)),
                         StrokeKind::Inside,
                     );
+                    if selected {
+                        header_painter.line_segment(
+                            [rect.left_bottom(), rect.right_bottom()],
+                            Stroke::new(1.5_f32, TEAL),
+                        );
+                    }
                     header_painter
                         .with_clip_rect(rect.intersect(screen).intersect(Rect::from_min_max(
                             screen.min + vec2(GUTTER, 0.0),
@@ -176,6 +182,12 @@ impl Application {
                         Stroke::new(0.6_f32, Color32::from_gray(205)),
                         StrokeKind::Inside,
                     );
+                    if (first.row..=last.row).contains(&row) {
+                        header_painter.line_segment(
+                            [rect.right_top(), rect.right_bottom()],
+                            Stroke::new(1.5_f32, TEAL),
+                        );
+                    }
                     header_painter
                         .with_clip_rect(Rect::from_min_max(
                             screen.min + vec2(0.0, HEADER),
