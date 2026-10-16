@@ -37,6 +37,10 @@ pub(super) enum Icon {
     New,
     Grid,
     Page,
+    PageLayout,
+    PageBreak,
+    Zoom100,
+    Freeze,
     Minus,
     Plus,
 }
@@ -264,6 +268,38 @@ pub(super) fn paint_icon(p: &Painter, rect: Rect, icon: Icon, color: Color32) {
             if matches!(icon, Icon::New) {
                 line((9.0, 12.0), (16.0, 12.0));
                 line((12.5, 8.5), (12.5, 15.5));
+            }
+        }
+        Icon::PageLayout | Icon::PageBreak | Icon::Zoom100 => {
+            box_at(4.0, 2.0, 16.0, 20.0);
+            match icon {
+                Icon::Zoom100 => letter("100", 9.0),
+                Icon::PageLayout => {
+                    box_at(7.0, 5.0, 10.0, 3.0);
+                    box_at(7.0, 10.0, 10.0, 8.0);
+                }
+                _ => {
+                    for x in [6.0, 10.0, 14.0] {
+                        line((x, 12.0), (x + 2.0, 12.0));
+                    }
+                    for y in [4.0, 8.0, 14.0, 18.0] {
+                        line((12.0, y), (12.0, y + 2.0));
+                    }
+                }
+            }
+        }
+        Icon::Freeze => {
+            box_at(2.0, 3.0, 20.0, 18.0);
+            p.rect_filled(
+                Rect::from_min_max(point(3.0, 4.0), point(21.0, 9.0)),
+                0,
+                color.gamma_multiply(0.35),
+            );
+            for x in [8.0, 15.0] {
+                line((x, 3.0), (x, 21.0));
+            }
+            for y in [9.0, 15.0] {
+                line((2.0, y), (22.0, y));
             }
         }
         Icon::Minus | Icon::Plus => {

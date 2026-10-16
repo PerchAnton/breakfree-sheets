@@ -1,16 +1,19 @@
 # Rust native iteration validation
 
+Current local check: `0.1.0-alpha.3`, 2026-10-16.
+
 Local host: macOS / aarch64, Rust 1.99.1. The owner requires Rust throughout;
 Python/Tk results are historical evidence, not Rust GUI or Windows validation.
 
 | Check actually performed | Result |
 | :--- | :--- |
 | `cargo test --locked --no-default-features` | 20 Rust core/files/interaction/CLI tests passed; no GUI dependency needed |
-| `cargo test --locked` | 35 tests passed: 20 core/integration and 15 native egui component/event tests |
+| `cargo test --locked` | 39 tests passed: 20 core/integration and 19 native egui component/event tests |
 | Frozen engine conformance | 35 synthetic scenarios from the preserved Python v1 engine passed in Rust, including decimal rounding/bounds, grammar, text/blank rules, errors, cycles and dependent values |
 | Required UI loop | Pointer/key events enter A1=2 and B1=3 in the grid; C1 formula entered in the real formula bar gives 5; grid replacement A1=4 gives 7; undo/redo, save/open and further formula-bar edit verified |
 | Refined native chrome | Ribbon Copy/Paste/Clear/Undo/Redo, formula Apply/Cancel and zoom tested by pointer events; disabled formatting remains inert; File return/New/Save, pending-draft preservation and suspended cell keys verified |
-| Narrow ribbon | 1366/1093/980/910 logical widths checked for group bounds/caption visibility and formula/grid separation; scrollbar clipping found during real capture and corrected |
+| View and ribbon controls | Ctrl+F1, chevron and tab double click; draft handoff when Formula Bar hides; hidden-header coordinates; grid-stroke paint changes while selection/results remain; same serialized bytes and clean state after visibility toggles; bounded whole-sheet Clear/Undo |
+| Narrow ribbon | Home and View at 1366/1093/980/910 logical widths checked for group bounds/caption visibility and formula/grid separation; scrollbar clipping found during real capture and corrected |
 | Grid/interaction | Shift/drag rectangular selection, address/range entry, F2/Escape, separate edit/selection modes, header width/height drag, wheel scroll with pinned headers, bounded visible-cell painting |
 | Clipboard | Native framework Copy/Cut/Paste events preserve typed identifiers; literal formula source, no range-reference translation claim |
 | Unsaved state | Rendered Save/Discard/Cancel controls include pending input; failed Save prevents destructive New; failed Open leaves current model/draft intact |
@@ -22,7 +25,7 @@ Python/Tk results are historical evidence, not Rust GUI or Windows validation.
 | `cargo clippy --locked --all-targets --all-features -- -D warnings` | Passed, including the capture feature |
 | `cargo build --locked --release --offline` | Native optimized macOS binary built after cached dependency fetch |
 | Standalone executable | Copied release binary executes `--capabilities` and `--version` from an isolated directory outside the checkout; stderr empty |
-| Actual native output | Five refreshed macOS framebuffer captures: Home at diagnostic UI scales 1.0/1.25/1.5, File page and range selection; own logo, all zones, caption clipping and shared formula source inspected; see UI_SPEC |
+| Actual native output | Six alpha.3 macOS framebuffer captures: Home 1.0/1.25/1.5, View 1.0/1.5 and collapsed ribbon 1.0; own logo, zones, group captions and formula source inspected; prior alpha.1 File/range evidence retained; see UI_SPEC |
 | Logo | Exact approved dedicated WebP; transparent corner alpha and opaque interior tested |
 | Historical baseline | Archived Python core 21 tests and persistence 10 tests still pass; Python is not needed by Rust builds/tests/runtime |
 | Documentation | Local links/image paths, journal/table checks where applicable, YAML syntax and `git diff --check` checked |

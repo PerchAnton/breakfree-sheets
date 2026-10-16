@@ -26,9 +26,10 @@ accompanying verification/changelog/journal records form one changeset; those
 records do not trigger recursive increments. Read-only work leaves the version
 unchanged. Further independent changes require another increment.
 
-Prepare `0.1.0-alpha.2` for the preceding native design refinement and this policy
-correction. The exact candidate is presented to the owner at completion. Preparing
-it under the standing instruction does not imply owner acceptance or publication.
+The policy-correction candidate `0.1.0-alpha.2` was agreed by the owner on
+2026-10-16. This was number agreement, not publication approval. Subsequent
+changes increment the counter and present the new exact number at completion;
+alpha.2 agreement does not imply acceptance of alpha.3 or later candidates.
 See [VERSIONING.md](../VERSIONING.md) for the sequence and change boundaries.
 Channel promotion and publication remain separate owner decisions. No tag,
 release, default-branch merge or history rewrite is authorized by this amendment.

@@ -115,7 +115,15 @@ impl Application {
                                 .frame(false)
                                 .min_size(vec2(40.0, 26.0)),
                             );
-                            if response.clicked() {
+                            self.probes.ribbon_tabs.insert(tab, response.rect);
+                            if response.double_clicked()
+                                && let Some((previous, collapsed)) = self.ribbon_before_tab_click
+                                && previous == tab
+                            {
+                                self.ribbon_collapsed = !collapsed;
+                            } else if response.clicked() {
+                                self.ribbon_before_tab_click = Some((tab, self.ribbon_collapsed));
+                                self.ribbon_collapsed = false;
                                 self.tab = tab.into();
                             }
                             if selected {
@@ -128,9 +136,43 @@ impl Application {
                                 );
                             }
                         }
+                        ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                            let label = if self.ribbon_collapsed {
+                                "Expand ribbon"
+                            } else {
+                                "Collapse ribbon"
+                            };
+                            let (rect, response) =
+                                ui.allocate_exact_size(vec2(28.0, 26.0), Sense::click());
+                            response.widget_info(|| {
+                                WidgetInfo::labeled(WidgetType::Button, ui.is_enabled(), label)
+                            });
+                            let response = response.on_hover_text(format!("{label} (Ctrl+F1)"));
+                            if response.hovered() {
+                                ui.painter()
+                                    .rect_filled(rect, 2, Color32::from_rgb(220, 239, 235));
+                            }
+                            let direction = if self.ribbon_collapsed { 1.0 } else { -1.0 };
+                            let c = rect.center();
+                            ui.painter().add(Shape::line(
+                                vec![
+                                    c + vec2(-4.0, -2.0 * direction),
+                                    c + vec2(0.0, 2.0 * direction),
+                                    c + vec2(4.0, -2.0 * direction),
+                                ],
+                                Stroke::new(1.4_f32, INK),
+                            ));
+                            self.probes.commands.insert("toggle-ribbon", rect);
+                            if response.clicked() {
+                                self.ribbon_collapsed = !self.ribbon_collapsed;
+                            }
+                        });
                     });
                 });
             });
+        if self.ribbon_collapsed {
+            return;
+        }
         // A solid horizontal scrollbar needs its own height at narrow logical widths.
         // Reserving it keeps group captions inside the ribbon's clip rectangle.
         let ribbon_height = if ctx.available_rect().width() < 1280.0 {
@@ -155,6 +197,8 @@ impl Application {
                         ui.add_enabled_ui(self.pending.is_none(), |ui| {
                             if self.tab == "Home" {
                                 self.home(ui, ctx);
+                            } else if self.tab == "View" {
+                                self.view_ribbon(ui, ctx);
                             } else {
                                 ui.add_space(12.0);
                                 ui.label(RichText::new(&self.tab).size(14.0));
@@ -295,7 +339,7 @@ impl Application {
                                 self.metrics.zoom = (self.metrics.zoom - 0.1).max(0.5);
                             }
                             ui.separator();
-                            command(ui, Icon::Page, "", vec2(28.0, 22.0), false, false)
+                            command(ui, Icon::PageLayout, "", vec2(28.0, 22.0), false, false)
                                 .on_disabled_hover_text("Page layout view is unavailable");
                             let normal = command(ui, Icon::Grid, "", vec2(28.0, 22.0), true, false)
                                 .on_hover_text("Normal worksheet view");

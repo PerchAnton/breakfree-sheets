@@ -29,13 +29,14 @@ scope and owner approval.
 
 | Field | State |
 | :--- | :--- |
-| Current development candidate | `0.1.0-alpha.2` |
+| Current development candidate | `0.1.0-alpha.3` |
+| Previously agreed candidate | `0.1.0-alpha.2`; owner agreement on 2026-10-16, not released |
 | Exact-number approval | Pending owner agreement |
 | Published product version | None; no release or tag created |
 | First stable release target | `0.2.0`; not yet accepted or published |
 
-The current candidate advances `0.1.0-alpha.1` and records the preceding native
-interface refinement together with the owner's corrected version/changelog rule.
+The current candidate advances the owner-agreed `0.1.0-alpha.2` with native
+ribbon and worksheet-view refinements. Its new exact number is pending agreement.
 The earlier provisional `0.2.0-dev.1` label and alpha.1 were never published as
 product releases. Historical commits, validation records and captured images
 retain the versions they actually had; they are not retroactively relabeled.

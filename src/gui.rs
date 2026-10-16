@@ -15,6 +15,7 @@ pub const INK: Color32 = Color32::from_rgb(36, 19, 55);
 #[derive(Clone)]
 pub struct Probes {
     pub commands: std::collections::BTreeMap<&'static str, Rect>,
+    pub ribbon_tabs: std::collections::BTreeMap<&'static str, Rect>,
     pub ribbon_groups: Vec<Rect>,
     pub ribbon_viewport: Rect,
     pub formula: Rect,
@@ -31,6 +32,7 @@ impl Default for Probes {
     fn default() -> Self {
         Self {
             commands: Default::default(),
+            ribbon_tabs: Default::default(),
             ribbon_groups: Vec::new(),
             ribbon_viewport: Rect::NOTHING,
             formula: Rect::NOTHING,
@@ -57,6 +59,11 @@ pub struct Application {
     pub probes: Probes,
     tab: String,
     backstage: bool,
+    ribbon_collapsed: bool,
+    ribbon_before_tab_click: Option<(&'static str, bool)>,
+    show_gridlines: bool,
+    show_headings: bool,
+    show_formula_bar: bool,
     name: String,
     logo: Option<TextureHandle>,
     pending: Option<Action>,
@@ -77,6 +84,11 @@ impl Application {
             probes: Probes::default(),
             tab: "Home".into(),
             backstage: false,
+            ribbon_collapsed: false,
+            ribbon_before_tab_click: None,
+            show_gridlines: true,
+            show_headings: true,
+            show_formula_bar: true,
             name,
             logo: None,
             pending: None,
@@ -182,6 +194,10 @@ impl Application {
                 self.choose_open(ctx);
             }
             return;
+        }
+        if ctx.input_mut(|i| i.consume_key(Modifiers::CTRL, Key::F1)) {
+            self.ribbon_collapsed = !self.ribbon_collapsed;
+            self.ribbon_before_tab_click = None;
         }
         let events = ctx.input(|i| i.events.clone());
         for event in events {
@@ -399,14 +415,16 @@ impl Application {
             self.pending = Some(Action::Close);
         }
         self.keyboard(ctx);
-        self.probes.commands.clear();
+        self.probes = Probes::default();
         ctx.send_viewport_cmd(ViewportCommand::Title(self.session.title()));
         self.title_strip(ctx);
         if self.backstage {
             self.file_page(ctx);
         } else {
             self.ribbon_chrome(ctx);
-            self.formula_bar(ctx);
+            if self.show_formula_bar {
+                self.formula_bar(ctx);
+            }
             self.message_bar(ctx);
             self.bottom_chrome(ctx);
             CentralPanel::default()
@@ -414,6 +432,16 @@ impl Application {
                 .show(ctx, |ui| {
                     ui.add_enabled_ui(self.pending.is_none(), |ui| self.grid(ui, ctx));
                 });
+        }
+        if ctx.input(|i| i.pointer.any_click())
+            && !ctx.input(|i| i.pointer.interact_pos()).is_some_and(|p| {
+                self.probes
+                    .ribbon_tabs
+                    .values()
+                    .any(|rect| rect.contains(p))
+            })
+        {
+            self.ribbon_before_tab_click = None;
         }
         if let Some(action) = self.pending.clone() {
             Window::new("Unsaved changes")
@@ -513,8 +541,11 @@ pub fn run(session: Session) -> eframe::Result {
                 app.selected();
             }
             #[cfg(feature = "capture")]
-            if std::env::var("BREAKFREE_CAPTURE_VIEW").as_deref() == Ok("file") {
-                app.backstage = true;
+            match std::env::var("BREAKFREE_CAPTURE_VIEW").as_deref() {
+                Ok("file") => app.backstage = true,
+                Ok("view") => app.tab = "View".into(),
+                Ok("collapsed") => app.ribbon_collapsed = true,
+                _ => {}
             }
             let _ = &mut app;
             Ok(Box::new(app))

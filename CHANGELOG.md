@@ -4,9 +4,44 @@ Every completed project changeset receives a new application version and a dated
 entry here. Dates use Europe/Kyiv. Candidate entries are development records, not
 published releases. See [the version policy](docs/VERSIONING.md).
 
-## 0.1.0-alpha.2 — 2026-10-16
+## 0.1.0-alpha.3 — 2026-10-16
 
 Status: development candidate; exact-number agreement pending; not released.
+
+### Added
+
+- Native View ribbon with Workbook Views, Show, Zoom, Window and Macros groups.
+  Gridlines, Headings, Formula Bar, Zoom and 100% controls operate on the real
+  worksheet view; unavailable operations remain disabled.
+- Ribbon collapse/restore through Ctrl+F1, double click on a tab or the tab-row
+  chevron. Clicking a collapsed tab opens commands persistently.
+- Select-all corner for the bounded A1–Z100 sheet, with normal range Clear/Undo.
+- Original page-view/zoom/pane drawings; no additional fonts or dependencies.
+
+### Changed
+
+- Preserve the shared draft in the grid editor when hiding its formula bar.
+  Hidden headings reclaim their space and use the same coordinate hit testing.
+  Visibility choices do not change stored data, history or dirty state.
+- Record the owner's exact alpha.2 agreement; advance build/CLI/Office metadata
+  to the independently reviewable alpha.3 candidate. Protocol/file versions stay 1.
+
+### Verification and limits
+
+39 default tests (20 core + 19 UI), 20 headless tests, fmt, all-target/all-feature
+Clippy, offline optimized build, isolated CLI/Office JSON, documentation links,
+YAML and whitespace checks passed. Six actual macOS frames were inspected.
+Local checks and actual native capture conditions are recorded in
+[VALIDATION.md](docs/VALIDATION.md) and [UI_SPEC.md](docs/UI_SPEC.md).
+New UI regressions exercise view changes during formula entry, recalculation,
+undo, save/reopen, visible grid strokes, whole-sheet Clear/Undo and ribbon
+collapse. Windows/Excel matched captures and real Windows DPI checks remain
+unavailable. No formatting, page layout, window management or macro support is
+implied by disabled controls. No merge, tag or release is included.
+
+## 0.1.0-alpha.2 — 2026-10-16
+
+Status: development candidate; exact number agreed by the owner on 2026-10-16; not released.
 
 ### Changed
 

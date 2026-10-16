@@ -1,6 +1,6 @@
 # BreakFree Sheets — Desktop UI specification
 
-Status: refined Rust native ribbon/File layout; Windows reference comparison pending.
+Status: alpha.3 native Home/View ribbons, collapsible commands and worksheet visibility; Windows reference comparison pending.
 Owner decisions: Rust throughout; desktop **Microsoft Excel 2024 for Windows**
 as visual/interaction target; **BreakFree Sheets** as the independent brand.
 
@@ -21,7 +21,8 @@ The following primary sources were read and explicitly cover Excel/Office 2024:
 | [Ribbon keyboard navigation](https://support.microsoft.com/en-us/accessibility/windows/use-the-keyboard-to-work-with-the-ribbon) | Tabs, command groups and focus/KeyTips model | Alt KeyTips parity; those remain unimplemented |
 | [Developer tab](https://support.microsoft.com/en-us/office/add-ins/show-the-developer-tab) | Optional, hidden-by-default tab | A requirement to expose unsupported macros here |
 | [Cell text formatting](https://support.microsoft.com/en-us/excel/format-text-in-cells) | Home font/alignment command organization; page explicitly includes Excel 2024 | Mixed-version/web illustrations are not matched Windows 2024 screenshots |
-| [Ribbon customization](https://support.microsoft.com/en-us/office/foundations-experiences/customize-the-ribbon-in-office) | Tabs/groups can differ by user configuration | One universal default layout for every edition/install |
+| [Worksheet gridlines](https://support.microsoft.com/en-us/excel/show-or-hide-gridlines-on-a-worksheet) | View → Show → Gridlines toggles worksheet lines; Excel 2024 included | Exact pixel geometry or our application’s implementation |
+| [Ribbon customization](https://support.microsoft.com/en-us/office/foundations-experiences/customize-the-ribbon-in-office) | Tabs/groups can differ by user configuration; Ctrl+F1 and tab double click collapse/expand commands | One universal default layout for every edition/install |
 
 Home, Insert, Page Layout, Formulas, Data, Review, View and Help are visible;
 File opens the working document menu. Developer is omitted because its tools
@@ -42,12 +43,14 @@ that mapping. Worksheet zoom is a separate control and does not scale the ribbon
 | Title/quick-access strip | 38 high; approved icon 24 × 24, workbook/app names, flat Save/Undo/Redo pictograms; native OS title also shows workbook/app |
 | File and ribbon tabs | 31 high; flat tabs, selected tab has a 2.5-point teal underline |
 | Expanded compact ribbon | 105 high, 119 below 1280 logical client width to reserve the solid scrollbar; white inset surface with 5-point corners and thin group separators |
+| Collapsed ribbon | Tabs stay visible; the 105/119-point command panel is removed, reclaiming worksheet height; tab-row chevron 28 × 26 |
+| View groups | Workbook Views 285, Show 224, Zoom 184, Window 293, Macros 76 wide; functional Show/Zoom controls, other operations explicitly disabled |
 | Home groups | Clipboard 168, Font 181, Alignment 222, Number 135, Styles 182, Cells 144, Editing 210 wide, plus separators/spacing |
 | Formula row | 34 high; framed name box 100 × 25; cancel/check pictograms and unavailable function control; remaining width is the real source editor |
-| Grid headers | Row gutter 44 wide; column header 24 high, pinned to viewport edges |
+| Grid headers | Row gutter 44 wide; column header 24 high, pinned to viewport edges; optional headings reclaim 44/24 points when hidden |
 | Scrollbars | Solid 12-point tracks, horizontal and vertical; actual viewport scrolling |
 | Default cells | Columns 80 wide, rows 20 high, 13-point fallback font; white surface with 0.5-point gray grid strokes |
-| Selection | 2-point teal range border, pale teal range fill, white active cell; selected headers have teal edge strokes; no nonfunctional fill handle |
+| Selection | 2-point teal range border, pale teal range fill, white active cell; selected headers have teal edge strokes; select-all corner targets A1–Z100; no nonfunctional fill handle |
 | Resizing | Header-edge drag, column width 32–400 and row height 16–100; Home Cells → Format opens numeric dimensions |
 | Sheet strip | 30 high; white active Sheet1 tab with teal underline; Sheet1 active, sheet navigation/add disabled with explanations |
 | Status | 25 high; Ready/Edit/Enter, selected address/range, errors, Normal view and disabled page view, minus/slider/plus/reset controls for real grid zoom 50–200%; no Sum/Average/Count |
@@ -84,8 +87,26 @@ range paste and reference translation are unavailable. A pasted formula keeps
 its literal references. Native New/Open/Save/Save As and close protection include
 pending source text; failed Open/Save preserve the active model or prior file.
 
+Ctrl+F1, a tab double click and the tab-row chevron collapse/restore commands.
+A single click on a collapsed tab opens it persistently. This bounded interaction
+is deliberate: there is no temporary ribbon overlay, auto-hide/full-screen mode,
+ribbon context menu or KeyTips implementation yet. Collapsing preserves the
+current source draft and does not dirty the workbook.
+
+View contains Workbook Views, Show, Zoom, Window and Macros groups. Normal view
+is active. Gridlines changes only painted cell strokes, Headings removes/restores
+headers and their hit targets, and Formula Bar removes/restores the full source
+row. Hiding the bar while editing transfers the same draft and type to inline
+editing without committing or cancelling it. Zoom/100% uses the existing 50–200%
+worksheet zoom. These application-session visibility choices survive New/Open,
+reset on application restart, and are not persisted in native v1. There are no
+model/history/file changes or dirty flags from changing visibility. The corner
+selects the bounded whole sheet with A1 active; Clear and Undo use real range edits.
+
 Font, Alignment, Styles and unimplemented Cells/Editing commands are disabled
-with explanatory tooltips. Other tabs identify their unavailable commands.
+with explanatory tooltips. View page/print layouts, ruler, custom views,
+zoom-to-selection, window/pane management and macros are disabled as well.
+Other tabs identify their unavailable commands.
 Fill handle, sorting/filtering and additional sheets are unavailable. Windows
 Alt KeyTips, formula-reference picking while editing, drag auto-scroll, rich
 clipboard, screen-reader grid semantics and full keyboard ribbon parity remain
@@ -99,9 +120,11 @@ operations keep familiar gestures; unavailable ones do not pretend to execute.
 
 ## Captures and DPI verification
 
-The captures below record the `0.1.0-alpha.1` design iteration; the File page
-therefore displays that historical build number. They are retained as visual
-evidence, not relabeled as a newer binary. Refreshed native Rust/OpenGL framebuffer captures were made on this macOS host with
+The current captures below record `0.1.0-alpha.3`. Historical alpha.1 frames
+remain available as [Home](screenshots/macos-diagnostic-100.png),
+[File](screenshots/macos-file.png) and [range](screenshots/macos-range.png), with
+their original versions; they are not relabeled. Native Rust/OpenGL framebuffer
+captures were made on this macOS host with
 client size 1366 × 768 logical points, Retina native factor 2, white/light theme,
 `examples/first-workbook.bfsheet`, C1 selected, worksheet zoom 100%, fixed fonts
 and no pending edit. OS decorations are not part of the framebuffer. Each image
@@ -110,11 +133,12 @@ inside that same client framebuffer; **this is not an OS display-DPI change**.
 
 | Condition | Own application evidence | Matched Excel 2024 Windows capture | Status |
 | :--- | :--- | :--- | :--- |
-| macOS diagnostic 1.0 | [Native frame](screenshots/macos-diagnostic-100.png) | Not available | Real own-app capture; inspected for layout/glyph/selection issues |
-| macOS diagnostic 1.25 | [Native frame](screenshots/macos-diagnostic-125.png) | Not available | Diagnostic only; narrower logical ribbon may scroll |
-| macOS diagnostic 1.5 | [Native frame](screenshots/macos-diagnostic-150.png) | Not available | Diagnostic only; narrower logical ribbon may scroll |
-| macOS File page | [Native frame](screenshots/macos-file.png), blank Book1 | Not available | Real local document page; no personal file paths in this capture |
-| macOS range selection | [Native frame](screenshots/macos-range.png), A1:C4 | Not available | Real selection highlighting; active endpoint C4 is blank |
+| macOS diagnostic 1.0 | [Native frame](screenshots/alpha3-home-100.png) | Not available | Real own-app capture; inspected for layout/glyph/selection issues |
+| macOS diagnostic 1.25 | [Native frame](screenshots/alpha3-home-125.png) | Not available | Diagnostic only; narrower logical ribbon may scroll |
+| macOS diagnostic 1.5 | [Native frame](screenshots/alpha3-home-150.png) | Not available | Diagnostic only; narrower logical ribbon may scroll |
+| macOS View 1.0 | [Native frame](screenshots/alpha3-view-100.png) | Not available | Working controls and group captions inspected |
+| macOS View 1.5 | [Native frame](screenshots/alpha3-view-150.png) | Not available | Narrow layout/caption and scrollbar inspection |
+| macOS collapsed 1.0 | [Native frame](screenshots/alpha3-collapsed-100.png) | Not available | More rows visible; source row/selection/result preserved |
 | Windows display 100% | Not captured | Not captured | **Not verified: Windows/Excel unavailable** |
 | Windows display 125% | Not captured | Not captured | **Not verified: Windows/Excel unavailable** |
 | Windows display 150% | Not captured | Not captured | **Not verified: Windows/Excel unavailable** |
@@ -131,6 +155,7 @@ set `BREAKFREE_CAPTURE_TO` to an absolute PNG path, optionally set
 launch the binary with the absolute native example path. For the File-page
 capture set `BREAKFREE_CAPTURE_VIEW=file` and launch with `--new`. Keep a copy
 of the capture-enabled executable before running another Cargo feature build.
+Use `BREAKFREE_CAPTURE_VIEW=view` or `collapsed` for the new ribbon frames.
 Use `BREAKFREE_CAPTURE_CELL=A1:C4` for the range example. The capture build exits
 after rendering. These developer-only variables are absent from the ordinary
 product interaction flow.
@@ -143,7 +168,7 @@ images at native pixels without resampling. Record differences and rerun the
 editing/resize/scroll workflow at each DPI before claiming a match. This remains
 an explicit acceptance gap, not a completed task hidden by simulated scaling.
 
-## Refinement review — 2026-10-16
+## Alpha.1 refinement review — 2026-10-16
 
 The previous own-app frame and refreshed frame were compared under the same
 1366 × 768 logical client, Retina factor 2, light theme, C1 selection and example
@@ -167,3 +192,15 @@ command drawings, a restricted Number/type selector, unavailable formatting and
 advanced tabs, a single bounded worksheet, separate native OS title chrome and
 a narrower File feature set. Matched Windows measurements remain the next visual
 acceptance step; no similarity percentage or visual identity is claimed.
+
+## Alpha.3 refinement review — 2026-10-16
+
+Own Home before/after frames use identical client size, native Retina factor,
+light theme, example book, C1 selection and 100% worksheet zoom. Home geometry
+is retained; the new corner affordance, ribbon chevron and page-view drawing are
+visible. View replaces its former unavailable-tab state; its new commands occupy the
+same group baseline and expose real visibility/zoom behavior. No earlier View
+screenshot is claimed. Collapsing at the same settings reclaims 105 logical vertical points.
+Narrow Home/View frames reserve scrollbar height and retain caption baselines.
+All reference-derived interaction claims are documentary, not measured Windows
+visual parity. The six current frames are actual alpha.3 executable output.

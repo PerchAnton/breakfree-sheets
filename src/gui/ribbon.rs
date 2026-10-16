@@ -144,3 +144,114 @@ impl Application {
         self.probes.ribbon_viewport = output.inner_rect;
     }
 }
+
+impl Application {
+    pub(super) fn view_ribbon(&mut self, ui: &mut Ui, ctx: &Context) {
+        let output = ScrollArea::horizontal()
+            .id_salt("view-ribbon-scroll")
+            .show(ui, |ui| {
+                ui.horizontal_top(|ui| {
+                    ui.spacing_mut().item_spacing.x = 2.0;
+                    let rect = group(ui, 285.0, "Workbook Views", |ui| {
+                        ui.horizontal_top(|ui| {
+                            let normal =
+                                command(ui, Icon::Grid, "Normal", vec2(57.0, 70.0), true, true)
+                                    .on_hover_text("Normal worksheet view is active");
+                            ui.painter().rect_stroke(
+                                normal.rect.shrink(1.0),
+                                2,
+                                Stroke::new(1.0_f32, TEAL),
+                                StrokeKind::Inside,
+                            );
+                            large(ui, Icon::PageBreak, "Page Break\nPreview", 76.0);
+                            large(ui, Icon::PageLayout, "Page\nLayout", 64.0);
+                            large(ui, Icon::Grid, "Custom\nViews", 64.0);
+                        });
+                    });
+                    self.probes.ribbon_groups.push(rect);
+                    let rect = group(ui, 224.0, "Show", |ui| {
+                        ui.horizontal_top(|ui| {
+                            ui.vertical(|ui| {
+                                ui.add_enabled(false, Checkbox::new(&mut false, "Ruler"))
+                                    .on_disabled_hover_text(
+                                        "Ruler requires an unavailable page layout view",
+                                    );
+                                let gridlines = ui.checkbox(&mut self.show_gridlines, "Gridlines");
+                                self.probes
+                                    .commands
+                                    .insert("show-gridlines", gridlines.rect);
+                                gridlines.on_hover_text(
+                                    "Show worksheet gridlines; cell contents are unchanged",
+                                );
+                            });
+                            ui.add_space(10.0);
+                            ui.vertical(|ui| {
+                                let formula =
+                                    ui.checkbox(&mut self.show_formula_bar, "Formula Bar");
+                                self.probes
+                                    .commands
+                                    .insert("show-formula-bar", formula.rect);
+                                if formula.changed() && !self.show_formula_bar {
+                                    self.reset_focus(ctx);
+                                    // Keep the one shared draft editable when its formula surface is hidden.
+                                    if self.session.surface == Surface::Formula {
+                                        self.session.surface = Surface::Grid;
+                                        self.focus_editor = true;
+                                    }
+                                }
+                                let headings = ui.checkbox(&mut self.show_headings, "Headings");
+                                self.probes.commands.insert("show-headings", headings.rect);
+                                if headings.changed() {
+                                    self.reveal = true;
+                                }
+                            });
+                        });
+                    });
+                    self.probes.ribbon_groups.push(rect);
+                    let rect = group(ui, 184.0, "Zoom", |ui| {
+                        ui.horizontal_top(|ui| {
+                            let zoom =
+                                command(ui, Icon::Find, "Zoom", vec2(51.0, 70.0), true, true);
+                            Popup::menu(&zoom).show(|ui| {
+                                ui.label("Worksheet zoom");
+                                ui.add(
+                                    Slider::new(&mut self.metrics.zoom, 0.5..=2.0)
+                                        .step_by(0.05)
+                                        .show_value(false),
+                                );
+                                ui.label(format!("{}%", (self.metrics.zoom * 100.0).round()));
+                            });
+                            let reset =
+                                command(ui, Icon::Zoom100, "100%", vec2(51.0, 70.0), true, true)
+                                    .on_hover_text("Restore worksheet zoom to 100%");
+                            self.probes.commands.insert("view-zoom-reset", reset.rect);
+                            if reset.clicked() {
+                                self.metrics.zoom = 1.0;
+                                self.reveal = true;
+                            }
+                            large(ui, Icon::Grid, "Zoom to\nSelection", 66.0);
+                        });
+                    });
+                    self.probes.ribbon_groups.push(rect);
+                    let rect = group(ui, 293.0, "Window", |ui| {
+                        ui.horizontal_top(|ui| {
+                            large(ui, Icon::New, "New\nWindow", 57.0);
+                            large(ui, Icon::Grid, "Arrange\nAll", 56.0);
+                            large(ui, Icon::Freeze, "Freeze\nPanes", 59.0);
+                            ui.vertical(|ui| {
+                                small(ui, Icon::Grid, "Split", 99.0);
+                                small(ui, Icon::Page, "Hide", 99.0);
+                                small(ui, Icon::Page, "Unhide", 99.0);
+                            });
+                        });
+                    });
+                    self.probes.ribbon_groups.push(rect);
+                    let rect = group(ui, 76.0, "Macros", |ui| {
+                        large(ui, Icon::Page, "Macros", 65.0);
+                    });
+                    self.probes.ribbon_groups.push(rect);
+                });
+            });
+        self.probes.ribbon_viewport = output.inner_rect;
+    }
+}

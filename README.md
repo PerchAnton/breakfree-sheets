@@ -11,7 +11,8 @@
 > target; the identity remains BreakFree Sheets. Visual identity, XLSX
 > compatibility and a supported-platform release are not claimed.
 
-Current development candidate: **`0.1.0-alpha.2`**, awaiting owner version approval.
+Current development candidate: **`0.1.0-alpha.3`**, awaiting owner version approval.
+The owner agreed to alpha.2 on 2026-10-16; alpha.3 is a new candidate.
 No product release is published. Every completed change increments the prerelease
 counter and is recorded in [CHANGELOG.md](CHANGELOG.md). See the
 [version and approval policy](docs/VERSIONING.md).
@@ -58,9 +59,12 @@ No native installer, signed package or public binary release is produced here.
 The light desktop layout has File and ribbon tabs, Home groups, a name box,
 formula bar, headers, active/range selection, sheet area, scrollbars and zoom.
 Home uses compact icon groups; File opens the working local document page with
-New/Open/Save/Save As/Close and unsaved-change protection.
+New/Open/Save/Save As/Close and unsaved-change protection. View now provides
+Gridlines, Headings, Formula Bar and worksheet zoom controls. Collapse/restore
+the ribbon using Ctrl+F1, a tab double click or the chevron beside the tabs.
+Clicking a collapsed tab opens its commands persistently.
 
-![Native BreakFree Sheets layout](docs/screenshots/macos-diagnostic-100.png)
+![Native BreakFree Sheets layout](docs/screenshots/alpha3-home-100.png)
 
 *Actual macOS application frame; Windows reference comparison remains pending.*
 
@@ -79,7 +83,11 @@ bar and inline cell share one draft. Enter/Tab commit and move; Shift reverses;
 Escape cancels. Arrows navigate in selection mode; Shift+arrows/drag select a
 range. The address box accepts `A1` or `A1:C4`. Drag header boundaries or use Home
 Cells → Format to resize. Worksheet zoom is independent of system display DPI.
-View dimensions and zoom reset on New/Open; they are not persisted in native v1.
+Column/row dimensions and zoom reset on New/Open; they are not persisted in native v1.
+Ribbon/visibility choices last for the application session and do not dirty the
+workbook. Hiding the formula bar moves an active draft into the grid editor.
+The top-left corner selects the whole supported A1–Z100 sheet; Clear and Undo
+work on that selection.
 
 New blank-cell entry uses **Auto (safe)**: formulas start with `=`, canonical
 decimal input becomes Number, leading-zero identifiers such as `00123` stay Text.

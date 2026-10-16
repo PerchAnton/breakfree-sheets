@@ -12,6 +12,7 @@ struct Desktop {
     context: Context,
     time: f64,
     size: eframe::egui::Vec2,
+    shapes: Vec<eframe::egui::epaint::ClippedShape>,
 }
 impl Desktop {
     fn new(scale: f32) -> Self {
@@ -22,6 +23,7 @@ impl Desktop {
             context,
             time: 0.0,
             size: vec2(1366.0, 768.0),
+            shapes: Vec::new(),
         };
         this.frame(vec![]);
         this.frame(vec![]);
@@ -35,7 +37,7 @@ impl Desktop {
             events,
             ..Default::default()
         };
-        let _ = self.context.run(input, |ctx| self.app.ui(ctx));
+        self.shapes = self.context.run(input, |ctx| self.app.ui(ctx)).shapes;
     }
     fn click(&mut self, p: Pos2, modifiers: Modifiers) {
         self.frame(vec![
@@ -508,14 +510,173 @@ fn narrow_ribbon_reserves_space_for_scrollbar_without_clipping_group_captions() 
         for _ in 0..4 {
             h.frame(vec![]);
         }
-        let viewport = h.app.probes.ribbon_viewport;
-        for group in &h.app.probes.ribbon_groups {
-            assert!(
-                group.bottom() <= viewport.bottom(),
-                "caption clipped at width {width}: {group:?} vs {viewport:?}"
-            );
+        for tab in ["Home", "View"] {
+            h.click(h.app.probes.ribbon_tabs[tab].center(), Modifiers::NONE);
+            let viewport = h.app.probes.ribbon_viewport;
+            for group in &h.app.probes.ribbon_groups {
+                assert!(
+                    group.bottom() <= viewport.bottom(),
+                    "{tab} caption clipped at width {width}: {group:?} vs {viewport:?}"
+                );
+            }
+            assert!(h.app.probes.formula.right() <= width);
+            assert!(h.app.probes.grid.height() > 350.0);
         }
-        assert!(h.app.probes.formula.right() <= width);
-        assert!(h.app.probes.grid.height() > 350.0);
     }
+}
+
+#[test]
+fn ribbon_collapse_shortcut_button_and_double_click_preserve_entry() {
+    let mut h = Desktop::new(1.0);
+    let expanded_top = h.app.probes.grid.top();
+    h.text("00123");
+    h.key(Key::F1, command());
+    assert!(h.app.probes.ribbon_groups.is_empty());
+    assert!(h.app.probes.grid.top() < expanded_top - 100.0);
+    assert_eq!(h.app.session.draft.source, "00123");
+    h.click(
+        h.app.probes.commands["toggle-ribbon"].center(),
+        Modifiers::NONE,
+    );
+    assert_eq!(h.app.probes.ribbon_groups.len(), 7);
+    assert_eq!(h.app.session.draft.source, "00123");
+    h.time += 1.0;
+    let tab = h.app.probes.ribbon_tabs["Home"].center();
+    h.click(tab, Modifiers::NONE);
+    h.click(tab, Modifiers::NONE);
+    assert!(h.app.probes.ribbon_groups.is_empty());
+    // A collapsed tab opens commands persistently; a double click also leaves them expanded.
+    h.time += 1.0;
+    h.click(tab, Modifiers::NONE);
+    h.click(tab, Modifiers::NONE);
+    assert_eq!(h.app.probes.ribbon_groups.len(), 7);
+    h.key(Key::Enter, Modifiers::NONE);
+    assert_eq!(h.value("A1"), "00123");
+}
+
+#[test]
+fn view_controls_keep_formula_draft_and_hidden_header_hit_testing_correct() {
+    for scale in [1.0, 1.25, 1.5] {
+        let mut h = Desktop::new(scale);
+        h.grid_enter("A1", "2");
+        h.grid_enter("B1", "3");
+        h.formula_enter("C1", "=A1+B1");
+        h.cell("C1");
+        h.click(h.app.probes.formula.center(), Modifiers::NONE);
+        h.key(Key::A, command());
+        h.text("=A1+B1+1");
+        h.click(h.app.probes.ribbon_tabs["View"].center(), Modifiers::NONE);
+        assert_eq!(h.app.probes.ribbon_groups.len(), 5);
+        h.click(
+            h.app.probes.commands["show-formula-bar"].center(),
+            Modifiers::NONE,
+        );
+        assert_eq!(h.app.probes.formula, Rect::NOTHING);
+        assert_eq!(h.app.session.surface, Surface::Grid);
+        assert_eq!(h.app.session.draft.source, "=A1+B1+1");
+        assert_eq!(h.value("C1"), "5");
+        h.key(Key::Escape, Modifiers::NONE);
+        assert_eq!(h.app.session.draft.source, "=A1+B1");
+        let width = h.app.probes.grid.width();
+        let top = h.app.probes.grid.top();
+        h.click(
+            h.app.probes.commands["show-headings"].center(),
+            Modifiers::NONE,
+        );
+        assert!(!h.app.probes.commands.contains_key("select-all"));
+        assert!((h.app.probes.grid.width() - width - 44.0).abs() < 0.1);
+        assert!((top - h.app.probes.grid.top() - 24.0).abs() < 0.1);
+        h.grid_enter("A1", "4");
+        assert_eq!(h.value("C1"), "7");
+        h.key(Key::Z, command());
+        assert_eq!(h.value("C1"), "5");
+        h.click(
+            h.app.probes.commands["show-formula-bar"].center(),
+            Modifiers::NONE,
+        );
+        h.formula_enter("A1", "4");
+        assert_eq!(h.value("C1"), "7");
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("view-controls.bfsheet");
+        assert!(h.app.save_to(&path));
+        let before = std::fs::read(&path).unwrap();
+        h.click(
+            h.app.probes.commands["show-gridlines"].center(),
+            Modifiers::NONE,
+        );
+        h.click(
+            h.app.probes.commands["show-headings"].center(),
+            Modifiers::NONE,
+        );
+        h.click(h.app.probes.commands["zoom-in"].center(), Modifiers::NONE);
+        h.click(
+            h.app.probes.commands["view-zoom-reset"].center(),
+            Modifiers::NONE,
+        );
+        assert_eq!(h.app.metrics.zoom, 1.0);
+        assert!(!h.app.session.dirty());
+        assert!(h.app.save_to(&path));
+        assert_eq!(std::fs::read(&path).unwrap(), before);
+        h.app.session.open(&path).unwrap();
+        h.frame(vec![]);
+        assert_eq!(h.value("C1"), "7");
+        assert_eq!(
+            h.app
+                .session
+                .editor
+                .book
+                .get("C1".parse().unwrap())
+                .unwrap()
+                .source,
+            "=A1+B1"
+        );
+        assert!(h.app.probes.painted_cells < 2600);
+    }
+}
+
+#[test]
+fn corner_selects_bounded_sheet_and_clear_undo_restores_sources() {
+    let mut h = Desktop::new(1.0);
+    h.grid_enter("A1", "00123");
+    h.grid_enter("B1", "3");
+    h.formula_enter("C1", "=B1*2");
+    h.click(
+        h.app.probes.commands["select-all"].center(),
+        Modifiers::NONE,
+    );
+    assert_eq!(h.app.session.selection.label(), "A1:Z100");
+    assert_eq!(h.app.session.selection.active, "A1".parse().unwrap());
+    h.click(h.app.probes.commands["clear"].center(), Modifiers::NONE);
+    assert!(h.app.session.editor.book.cells().is_empty());
+    h.key(Key::Z, command());
+    assert_eq!(h.value("A1"), "00123");
+    assert_eq!(h.value("C1"), "6");
+}
+
+#[test]
+fn gridline_toggle_changes_paint_without_removing_selection_or_cell_values() {
+    use eframe::egui::{Color32, Shape};
+    fn count(h: &Desktop, color: Color32) -> usize {
+        h.shapes.iter().filter(|shape| matches!(&shape.shape,
+            Shape::Rect(r) if r.stroke.color == color && r.rect.intersects(h.app.probes.grid)
+        )).count()
+    }
+    let mut h = Desktop::new(1.0);
+    h.grid_enter("A1", "2");
+    h.formula_enter("C1", "=A1+3");
+    h.click(h.app.probes.ribbon_tabs["View"].center(), Modifiers::NONE);
+    let gray = Color32::from_gray(218);
+    assert!(count(&h, gray) > 100);
+    h.click(
+        h.app.probes.commands["show-gridlines"].center(),
+        Modifiers::NONE,
+    );
+    assert_eq!(count(&h, gray), 0);
+    assert!(count(&h, breakfree_sheets::gui::TEAL) > 0);
+    assert_eq!(h.value("C1"), "5");
+    h.click(
+        h.app.probes.commands["show-gridlines"].center(),
+        Modifiers::NONE,
+    );
+    assert!(count(&h, gray) > 100);
 }
