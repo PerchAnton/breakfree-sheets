@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/PerchAnton/breakfree-office"><img src="https://raw.githubusercontent.com/PerchAnton/breakfree-office/main/docs/brand/breakfree-icon.webp" alt="BreakFree Office" width="160" height="160"></a>
+  <a href="https://github.com/PerchAnton/breakfree-office"><img src="docs/brand/breakfree-sheets-transparent.webp" alt="BreakFree Sheets" width="160" height="160"></a>
 </p>
 
 <h1 align="center">BreakFree Sheets</h1>
