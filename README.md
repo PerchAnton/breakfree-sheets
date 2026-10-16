@@ -1,5 +1,9 @@
-<p align="center"><img src="assets/breakfree-sheets.webp" alt="Approved BreakFree Sheets mark with transparent exterior" width="160" height="160"></p>
+<p align="center">
+  <a href="https://github.com/PerchAnton/breakfree-office"><img src="docs/brand/breakfree-sheets-transparent.webp" alt="BreakFree Sheets" width="160" height="160"></a>
+</p>
+
 <h1 align="center">BreakFree Sheets</h1>
+
 <p align="center"><strong>Your numbers. Your freedom.</strong><br>Independent native Rust spreadsheet prototype.</p>
 
 > Working prototype for review. Rust is the owner's chosen language for every
