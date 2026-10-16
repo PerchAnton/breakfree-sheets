@@ -14,8 +14,10 @@ A stored cell has exactly `{kind, source}`. `kind` is `text`, `number` or
 `formula`; `source` is a valid Unicode string of at most 4096 characters. Missing
 cells are blank. Empty *text* is still text. The Rust entry defaults to a documented safe Auto mode for a blank cell:
 `=` starts a formula; valid decimal input without leading integer zeros is a
-number; other input is text. `00123` stays text. Existing cells retain their kind
-unless the user selects another type; choosing Number is an intentional conversion. Dates, booleans and locale-based inference are absent.
+number; other input is text. `00123` stays text. F2/formula-bar edits retain the stored kind
+unless the user selects another type; choosing Number is an intentional conversion.
+Typing a complete replacement in selection mode applies safe Auto inference
+again. Dates, booleans and locale-based inference are absent.
 
 Numeric sources allow a sign, ASCII decimal digits and a dot, without grouping,
 whitespace, exponent notation, NaN or Infinity. Sources preserve trailing zeros

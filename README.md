@@ -67,7 +67,8 @@ View dimensions and zoom reset on New/Open; they are not persisted in native v1.
 
 New blank-cell entry uses **Auto (safe)**: formulas start with `=`, canonical
 decimal input becomes Number, leading-zero identifiers such as `00123` stay Text.
-Existing cells retain their stored kind unless the user changes the selector.
+F2/formula-bar edits retain the stored kind unless the selector changes. Typing
+a complete replacement in selection mode applies safe Auto inference again.
 Choose Text/Number/Formula explicitly in Home Number when desired. Types and
 sources are stored separately from formatted results; decimal dots are explicit.
 

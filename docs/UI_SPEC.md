@@ -70,7 +70,8 @@ same Rust editor/engine used by headless tests; no displayed result is invented.
 
 The name field accepts an address or rectangle such as `A1:C4` followed by Enter.
 There are no named-range definitions yet. New input uses safe Auto typing;
-`00123` remains text. Existing kinds remain explicit. The Home Number selector
+`00123` remains text. F2/formula-bar edits retain the stored kind; typing a
+complete replacement in selection mode uses safe Auto inference again. The Home Number selector
 can intentionally change a source kind; currency/percent/display formatting
 controls are disabled. Resizing/zoom changes only view state and never source
 values. Those view dimensions reset on New/Open because native v1 does not yet

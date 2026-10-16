@@ -61,8 +61,9 @@ and status/zoom are implemented. Arrow/Tab/Enter/F2/Escape, shift/drag ranges,
 source edits, column/row resizing and cell history are supported.
 
 Safe Auto entry is deliberate: a new `=` source is a formula, canonical decimal
-input is numeric, leading-zero identifiers remain text. Existing stored cell
-kinds remain explicit unless the user changes the type selector. Number display
+input is numeric, leading-zero identifiers remain text. F2/formula-bar source
+edits retain the stored kind unless the user changes the type selector. Typing
+a complete replacement in selection mode applies safe Auto inference again. Number display
 does not alter stored source. This is narrower than Excel's type inference.
 
 The first model remains one sheet A1–Z100. Clear supports a rectangular range in
