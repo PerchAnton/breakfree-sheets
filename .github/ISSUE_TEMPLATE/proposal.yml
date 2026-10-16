@@ -1,0 +1,27 @@
+name: Feature or workflow proposal
+description: Suggest a spreadsheet workflow or technical improvement.
+title: "[Proposal] "
+body:
+  - type: markdown
+    attributes:
+      value: "BreakFree Sheets is at the planning stage. Use synthetic data and explicit expected results. Do not attach real financial or customer records."
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Smallest useful outcome
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Sample input and expected result
+  - type: textarea
+    id: context
+    attributes:
+      label: Alternatives and context
